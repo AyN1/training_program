@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Training Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;
+  --text:#F0EFE8;--muted:#6B6B72;--faint:#3A3A3D;
+  --s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;
+  --green:#2ECC71;--radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:60px}
+.hero{padding:52px 20px 24px;text-align:center}
+.hero-label{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:1}
+.hero-sub{margin-top:8px;font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;padding:0 16px 20px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:8px 18px;border-radius:50px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .2s}
+.tab.active{border-color:transparent;color:#0D0D0F;font-weight:600}
+.tab[data-s="1"].active{background:var(--s1)}
+.tab[data-s="2"].active{background:var(--s2)}
+.tab[data-s="3"].active{background:var(--s3)}
+.tab[data-s="4"].active{background:var(--s4)}
+.tab[data-s="c"].active{background:var(--sc);color:#fff}
+.tab[data-s="log"].active{background:var(--text)}
+.session{display:none;padding:0 16px}
+.session.active{display:block}
+.session-header{margin-bottom:16px}
+.session-name{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1.1}
+.session-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:50px;font-size:12px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin:14px 0}
+.progress-fill{height:100%;border-radius:2px;transition:width .4s ease;width:0%}
+.progress-fill.s1{background:var(--s1)}.progress-fill.s2{background:var(--s2)}
+.progress-fill.s3{background:var(--s3)}.progress-fill.s4{background:var(--s4)}
+.progress-fill.sc{background:var(--sc)}
+.section-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+.exercise-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s,opacity .2s}
+.exercise-card.done{border-color:var(--green);opacity:.5}
+.exercise-card.done .ex-name{text-decoration:line-through}
+.ex-header{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.ex-num{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:28px;color:var(--muted)}
+.ex-info{flex:1}
+.ex-name{font-size:15px;font-weight:500;line-height:1.3}
+.ex-quick{font-size:12px;color:var(--muted);margin-top:2px}
+.ex-check{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .2s}
+.exercise-card.done .ex-check{background:var(--green);border-color:var(--green)}
+.ex-check svg{display:none}
+.exercise-card.done .ex-check svg{display:block}
+.ex-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border)}
+.stat{background:var(--card);padding:10px 8px;text-align:center}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.weight-row{display:flex;align-items:center;gap:10px;padding:10px 16px 14px;border-top:1px solid var(--border)}
+.weight-label{font-size:12px;color:var(--muted);flex:1}
+.weight-input{background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 10px;width:90px;text-align:center}
+.weight-input::placeholder{color:var(--faint)}
+.weight-unit{font-size:12px;color:var(--muted)}
+.superset-divider{display:flex;align-items:center;gap:8px;padding:6px 16px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.superset-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.superset-line{flex:1;height:1px;background:var(--faint)}
+.hiit-card{border-radius:var(--radius);padding:16px;margin-bottom:8px}
+.hiit-card .ex-header{padding:0 0 10px}
+.hiit-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:6px}
+.hiit-detail{font-size:13px;opacity:.85;line-height:1.6}
+.s1-bg{background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(78,205,196,.05));border-color:rgba(78,205,196,.3)}
+.s2-bg{background:linear-gradient(135deg,rgba(255,107,107,.15),rgba(255,107,107,.05));border-color:rgba(255,107,107,.3)}
+.s3-bg{background:linear-gradient(135deg,rgba(255,217,61,.15),rgba(255,217,61,.05));border-color:rgba(255,217,61,.3)}
+.s4-bg{background:linear-gradient(135deg,rgba(199,125,255,.15),rgba(199,125,255,.05));border-color:rgba(199,125,255,.3)}
+.sc-bg{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(249,115,22,.05));border-color:rgba(249,115,22,.3)}
+.s1-accent{color:var(--s1)}.s2-accent{color:var(--s2)}.s3-accent{color:var(--s3)}.s4-accent{color:var(--s4)}.sc-accent{color:var(--sc)}
+.note-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;font-size:13px;color:var(--muted);line-height:1.5}
+.info-card{background:var(--surface);border:1px solid rgba(249,115,22,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+.info-card-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--sc);margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-key{color:var(--muted)}
+.info-val{font-weight:500;color:var(--text)}
+.btn-row{display:flex;gap:8px;margin-top:20px}
+.btn{flex:1;padding:13px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.btn:active{background:var(--surface)}
+.btn-primary{background:var(--surface);color:var(--text);border-color:var(--faint)}
+.log-header{margin-bottom:20px}
+.log-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px}
+.log-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.log-entry{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.log-entry-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer}
+.log-entry-date{font-size:13px;font-weight:500}
+.log-entry-seance{font-size:12px;color:var(--muted)}
+.log-entry-badge{font-size:11px;padding:3px 10px;border-radius:50px;font-weight:500}
+.log-entry-body{padding:0 16px 14px;border-top:1px solid var(--border);display:none}
+.log-entry-body.open{display:block}
+.log-exercise-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.log-exercise-row:last-child{border-bottom:none}
+.log-ex-name{color:var(--muted);flex:1}
+.log-ex-weight{font-weight:500}
+.log-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+.import-area input[type=file]{display:none}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Programme personnel</div>
+  <div class="hero-title">TRAINING<br>PLAN</div>
+  <div class="hero-sub">OMS · Huberman · 4 séances + cardio</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-s="1" onclick="switchTab('1')">S1</button>
+  <button class="tab" data-s="2" onclick="switchTab('2')">S2</button>
+  <button class="tab" data-s="3" onclick="switchTab('3')">S3</button>
+  <button class="tab" data-s="4" onclick="switchTab('4')">S4</button>
+  <button class="tab" data-s="c" onclick="switchTab('c')">🔥 Cardio</button>
+  <button class="tab" data-s="log" onclick="switchTab('log')">📋 Carnet</button>
+</div>
+
+<!-- ===================== SÉANCE 1 ===================== -->
+<div class="session active" id="tab1">
+  <div class="session-header">
+    <div class="session-name s1-accent">Full Body<br>+ Cardio HIIT</div>
+    <div class="session-meta">
+      <span class="badge"><span class="dot" style="background:var(--s1)"></span>60 min</span>
+      <span class="badge">Musculation + HIIT</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill s1" id="prog1"></div></div>
+  <div class="section-label">Musculation — ≈ 30 min</div>
+
+  <div class="exercise-card" id="s1e1">
+    <div class="ex-header" onclick="toggleDone('s1e1','1')">
+      <div class="ex-num">01</div>
+      <div class="ex-info"><div class="ex-name">Fentes en déplacement</div><div class="ex-quick">25% du poids du corps</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">—</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">100</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val">—</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e1" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e2">
+    <div class="ex-header" onclick="toggleDone('s1e2','1')">
+      <div class="ex-num">02</div>
+      <div class="ex-info"><div class="ex-name">Hyperextension</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">3</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">15</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e2" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e3">
+    <div class="ex-header" onclick="toggleDone('s1e3','1')">
+      <div class="ex-num">03</div>
+      <div class="ex-info"><div class="ex-name">Développé couché</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">90s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e3" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e4">
+    <div class="ex-header" onclick="toggleDone('s1e4','1')">
+      <div class="ex-num">04</div>
+      <div class="ex-info"><div class="ex-name">Rowing buste penché</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">90s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e4" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e5">
+    <div class="ex-header" onclick="toggleDone('s1e5','1')">
+      <div class="ex-num">05</div>
+      <div class="ex-info"><div class="ex-name">Élévations latérales</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e5" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e6">
+    <div class="ex-header" onclick="toggleDone('s1e6','1')">
+      <div class="ex-num">06</div>
+      <div class="ex-info"><div class="ex-name">Dips machine / Rebord d'un banc</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">60s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e6" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s1e7">
+    <div class="ex-header" onclick="toggleDone('s1e7','1')">
+      <div class="ex-num">07</div>
+      <div class="ex-info"><div class="ex-name">Curl incliné</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s1e7" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="section-label">Cardio — ≈ 30 min</div>
+  <div class="hiit-card s1-bg exercise-card" id="s1e8">
+    <div class="ex-header" onclick="toggleDone('s1e8','1')" style="padding:0 0 10px">
+      <div class="ex-num s1-accent">08</div>
+      <div class="ex-info"><div class="hiit-title s1-accent">Sprint HIIT</div><div class="hiit-detail">12 × 1 min effort / 1 min récup<br>+ échauffement & retour au calme<br>Tapis : 10-12 km/h effort / 5-6 km/h récup</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="resetSession('1')">Réinitialiser</button>
+    <button class="btn btn-primary" onclick="saveSession('1')">Sauvegarder séance</button>
+  </div>
+</div>
+
+<!-- ===================== SÉANCE 2 ===================== -->
+<div class="session" id="tab2">
+  <div class="session-header">
+    <div class="session-name s2-accent">Full Body<br>+ Cardio LISS</div>
+    <div class="session-meta">
+      <span class="badge"><span class="dot" style="background:var(--s2)"></span>90 min</span>
+      <span class="badge">Supersets + Vélo</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill s2" id="prog2"></div></div>
+  <div class="section-label">Superset A — Max séries</div>
+
+  <div class="exercise-card" id="s2e1a">
+    <div class="ex-header" onclick="toggleDone('s2e1a','2')">
+      <div class="ex-num">A1</div>
+      <div class="ex-info"><div class="ex-name">Développé incliné haltères</div><div class="ex-quick">Poitrine</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s2-accent">—</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s2e1a" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="exercise-card" id="s2e1b">
+    <div class="ex-header" onclick="toggleDone('s2e1b','2')">
+      <div class="ex-num">A2</div>
+      <div class="ex-info"><div class="ex-name">Rowing bûcheron</div><div class="ex-quick">Dos — puis repos 90s</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s2-accent">90s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s2e1b" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="section-label">Superset B — Max séries</div>
+  <div class="exercise-card" id="s2e2a">
+    <div class="ex-header" onclick="toggleDone('s2e2a','2')">
+      <div class="ex-num">B1</div>
+      <div class="ex-info"><div class="ex-name">Squat / Hack squat</div><div class="ex-quick">Quadriceps</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s2-accent">—</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s2e2a" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="exercise-card" id="s2e2b">
+    <div class="ex-header" onclick="toggleDone('s2e2b','2')">
+      <div class="ex-num">B2</div>
+      <div class="ex-info"><div class="ex-name">Deadlift haltères</div><div class="ex-quick">Ischio / bas du dos — puis repos 90s</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s2-accent">90s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s2e2b" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="section-label">Cardio — 60 min</div>
+  <div class="hiit-card s2-bg exercise-card" id="s2e3">
+    <div class="ex-header" onclick="toggleDone('s2e3','2')" style="padding:0 0 10px">
+      <div class="ex-num s2-accent">C1</div>
+      <div class="ex-info"><div class="hiit-title s2-accent">Vélo Zone 2</div><div class="hiit-detail">75% FC Max — 40 min continu<br>Résistance modérée, parler possible en phrases courtes</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+  <div class="hiit-card s2-bg exercise-card" id="s2e4">
+    <div class="ex-header" onclick="toggleDone('s2e4','2')" style="padding:0 0 10px">
+      <div class="ex-num s2-accent">C2</div>
+      <div class="ex-info"><div class="hiit-title s2-accent">Vélo Intervalles</div><div class="hiit-detail">10 × 1 min résistance max / 1 min légère — 20 min</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="resetSession('2')">Réinitialiser</button>
+    <button class="btn btn-primary" onclick="saveSession('2')">Sauvegarder séance</button>
+  </div>
+</div>
+
+<!-- ===================== SÉANCE 3 ===================== -->
+<div class="session" id="tab3">
+  <div class="session-header">
+    <div class="session-name s3-accent">Cardio LISS<br>+ Full Body</div>
+    <div class="session-meta">
+      <span class="badge"><span class="dot" style="background:var(--s3)"></span>90 min</span>
+      <span class="badge">Footing + Supersets</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill s3" id="prog3"></div></div>
+  <div class="section-label">Cardio — 45 min</div>
+  <div class="hiit-card s3-bg exercise-card" id="s3e0">
+    <div class="ex-header" onclick="toggleDone('s3e0','3')" style="padding:0 0 10px">
+      <div class="ex-num s3-accent">01</div>
+      <div class="ex-info"><div class="hiit-title s3-accent">Footing Zone 2</div><div class="hiit-detail">75% FC Max — 45 min continu</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+
+  <div class="section-label">Superset A — Max séries</div>
+  <div class="exercise-card" id="s3e1a">
+    <div class="ex-header" onclick="toggleDone('s3e1a','3')">
+      <div class="ex-num">A1</div>
+      <div class="ex-info"><div class="ex-name">Tirage vertical</div><div class="ex-quick">Dos</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">—</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e1a" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="exercise-card" id="s3e1b">
+    <div class="ex-header" onclick="toggleDone('s3e1b','3')">
+      <div class="ex-num">A2</div>
+      <div class="ex-info"><div class="ex-name">Overhead Press</div><div class="ex-quick">Épaules — puis repos 90s</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">90s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e1b" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="section-label">Isolation — 4 séries</div>
+  <div class="exercise-card" id="s3e2">
+    <div class="ex-header" onclick="toggleDone('s3e2','3')">
+      <div class="ex-num">02</div>
+      <div class="ex-info"><div class="ex-name">Leg extension</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">45s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e2" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="exercise-card" id="s3e3">
+    <div class="ex-header" onclick="toggleDone('s3e3','3')">
+      <div class="ex-num">03</div>
+      <div class="ex-info"><div class="ex-name">Leg curl</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">45s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e3" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+
+  <div class="section-label">Superset B — Max séries</div>
+  <div class="exercise-card" id="s3e4a">
+    <div class="ex-header" onclick="toggleDone('s3e4a','3')">
+      <div class="ex-num">B1</div>
+      <div class="ex-info"><div class="ex-name">Extensions triceps poulie</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">—</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e4a" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="exercise-card" id="s3e4b">
+    <div class="ex-header" onclick="toggleDone('s3e4b','3')">
+      <div class="ex-num">B2</div>
+      <div class="ex-info"><div class="ex-name">Curl poulie</div><div class="ex-quick">puis repos 60s</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats">
+      <div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div>
+      <div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div>
+      <div class="stat"><div class="stat-val s3-accent">60s</div><div class="stat-label">Repos</div></div>
+    </div>
+    <div class="weight-row"><span class="weight-label">Charge utilisée</span><input class="weight-input" type="number" placeholder="0" data-ex="s3e4b" oninput="saveWeight(this)"><span class="weight-unit">kg</span></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="resetSession('3')">Réinitialiser</button>
+    <button class="btn btn-primary" onclick="saveSession('3')">Sauvegarder séance</button>
+  </div>
+</div>
+
+<!-- ===================== SÉANCE 4 ===================== -->
+<div class="session" id="tab4">
+  <div class="session-header">
+    <div class="session-name s4-accent">Cardio LISS<br>+ WOD Cooper</div>
+    <div class="session-meta">
+      <span class="badge"><span class="dot" style="background:var(--s4)"></span>90 min</span>
+      <span class="badge">Endurance + Poids corps</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill s4" id="prog4"></div></div>
+  <div class="section-label">Cardio LISS — 70 min</div>
+  <div class="hiit-card s4-bg exercise-card" id="s4e1">
+    <div class="ex-header" onclick="toggleDone('s4e1','4')" style="padding:0 0 10px">
+      <div class="ex-num s4-accent">01</div>
+      <div class="ex-info"><div class="hiit-title s4-accent">Cardio modéré Z2</div><div class="hiit-detail">Footing / rando / vélo — 75% FC Max — 1h10 continu</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+  <div class="section-label">WOD Cooper — 20 min max tours</div>
+  <div class="note-card">Enchaîner les 4 exercices sans repos. Compter le nombre de tours en 20 min. Les pompes peuvent être faites sur les genoux si nécessaire.</div>
+  <div class="exercise-card" id="s4e2">
+    <div class="ex-header" onclick="toggleDone('s4e2','4')">
+      <div class="ex-num">01</div><div class="ex-info"><div class="ex-name">Burpees</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Tours</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s4-accent">0s</div><div class="stat-label">Repos</div></div></div>
+  </div>
+  <div class="exercise-card" id="s4e3">
+    <div class="ex-header" onclick="toggleDone('s4e3','4')">
+      <div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Air Squat</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Tours</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s4-accent">0s</div><div class="stat-label">Repos</div></div></div>
+  </div>
+  <div class="exercise-card" id="s4e4">
+    <div class="ex-header" onclick="toggleDone('s4e4','4')">
+      <div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Pompes</div><div class="ex-quick">Sur les genoux si nécessaire</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Tours</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s4-accent">0s</div><div class="stat-label">Repos</div></div></div>
+  </div>
+  <div class="exercise-card" id="s4e5">
+    <div class="ex-header" onclick="toggleDone('s4e5','4')">
+      <div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Sit Ups</div></div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Tours</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s4-accent">0s</div><div class="stat-label">Repos</div></div></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="resetSession('4')">Réinitialiser</button>
+    <button class="btn btn-primary" onclick="saveSession('4')">Sauvegarder séance</button>
+  </div>
+</div>
+
+<!-- ===================== CARDIO INTERMÉDIAIRE ===================== -->
+<div class="session" id="tabc">
+  <div class="session-header">
+    <div class="session-name sc-accent">Cardio<br>Intermédiaire</div>
+    <div class="session-meta">
+      <span class="badge"><span class="dot" style="background:var(--sc)"></span>Jours de repos</span>
+      <span class="badge">Brûle-graisses Zone 2</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill sc" id="progc"></div></div>
+
+  <div class="info-card">
+    <div class="info-card-title">Réglages tapis incliné</div>
+    <div class="info-row"><span class="info-key">Vitesse</span><span class="info-val">5.5 – 6.5 km/h</span></div>
+    <div class="info-row"><span class="info-key">Inclinaison</span><span class="info-val">8 – 10%</span></div>
+    <div class="info-row"><span class="info-key">FC cible</span><span class="info-val">140 – 150 bpm</span></div>
+    <div class="info-row"><span class="info-key">Test Zone 2</span><span class="info-val">Parler en phrases courtes ✓</span></div>
+    <div class="info-row"><span class="info-key">≈ 10 000 pas</span><span class="info-val">50 – 55 min</span></div>
+  </div>
+
+  <div class="section-label">Option A — Marche inclinée (recommandé)</div>
+  <div class="hiit-card sc-bg exercise-card" id="sce1">
+    <div class="ex-header" onclick="toggleDone('sce1','c')" style="padding:0 0 10px">
+      <div class="ex-num sc-accent">01</div>
+      <div class="ex-info">
+        <div class="hiit-title sc-accent">Marche inclinée Zone 2</div>
+        <div class="hiit-detail">45 – 55 min · 5.5-6.5 km/h · inclinaison 8-10%<br>≈ 350-450 kcal · sans stress articulaire</div>
+      </div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+
+  <div class="section-label">Option B — Vélo Zone 2</div>
+  <div class="hiit-card sc-bg exercise-card" id="sce2">
+    <div class="ex-header" onclick="toggleDone('sce2','c')" style="padding:0 0 10px">
+      <div class="ex-num sc-accent">01</div>
+      <div class="ex-info">
+        <div class="hiit-title sc-accent">Vélo de fitness Zone 2</div>
+        <div class="hiit-detail">45 min · résistance modérée · 75% FC Max<br>Bonne alternative si douleurs aux jambes</div>
+      </div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+
+  <div class="section-label">Option C — Marche extérieure</div>
+  <div class="hiit-card sc-bg exercise-card" id="sce3">
+    <div class="ex-header" onclick="toggleDone('sce3','c')" style="padding:0 0 10px">
+      <div class="ex-num sc-accent">01</div>
+      <div class="ex-info">
+        <div class="hiit-title sc-accent">Marche rapide dehors</div>
+        <div class="hiit-detail">50 – 60 min · rythme soutenu<br>Gratuit, zéro équipement, ≈ 10 000 pas</div>
+      </div>
+      <div class="ex-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0D0D0F" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+
+  <div class="note-card" style="margin-top:8px">
+    Faire 1 à 3 de ces séances par semaine, les jours entre tes séances de musculation. Pas obligatoire chaque semaine — écoute ta récupération.
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="resetSession('c')">Réinitialiser</button>
+    <button class="btn btn-primary" onclick="saveSession('c')">Sauvegarder séance</button>
+  </div>
+</div>
+
+<!-- ===================== CARNET ===================== -->
+<div class="session" id="tablog">
+  <div class="log-header">
+    <div class="log-title">CARNET</div>
+    <div class="log-sub">Historique de tes séances</div>
+  </div>
+  <div id="log-list"></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="exportJSON()">Exporter JSON</button>
+    <label class="btn" style="text-align:center;cursor:pointer">Importer JSON<input type="file" accept=".json" onchange="importJSON(event)"></label>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sessionExercises = {
+  '1':['s1e1','s1e2','s1e3','s1e4','s1e5','s1e6','s1e7','s1e8'],
+  '2':['s2e1a','s2e1b','s2e2a','s2e2b','s2e3','s2e4'],
+  '3':['s3e0','s3e1a','s3e1b','s3e2','s3e3','s3e4a','s3e4b'],
+  '4':['s4e1','s4e2','s4e3','s4e4','s4e5'],
+  'c':['sce1','sce2','sce3']
+};
+const exerciseNames = {
+  s1e1:'Fentes',s1e2:'Hyperextension',s1e3:'Développé couché',s1e4:'Rowing buste penché',
+  s1e5:'Élévations latérales',s1e6:'Dips',s1e7:'Curl incliné',s1e8:'Sprint HIIT',
+  s2e1a:'Développé incliné',s2e1b:'Rowing bûcheron',s2e2a:'Squat/Hack squat',s2e2b:'Deadlift haltères',
+  s2e3:'Vélo Zone 2',s2e4:'Vélo Intervalles',
+  s3e0:'Footing Zone 2',s3e1a:'Tirage vertical',s3e1b:'Overhead Press',
+  s3e2:'Leg extension',s3e3:'Leg curl',s3e4a:'Extensions triceps',s3e4b:'Curl poulie',
+  s4e1:'Cardio Z2',s4e2:'Burpees',s4e3:'Air Squat',s4e4:'Pompes',s4e5:'Sit Ups',
+  sce1:'Marche inclinée',sce2:'Vélo Zone 2',sce3:'Marche extérieure'
+};
+const sessionColors={'1':'#4ECDC4','2':'#FF6B6B','3':'#FFD93D','4':'#C77DFF','c':'#F97316'};
+const sessionNames={'1':'Full Body + HIIT','2':'Full Body + LISS','3':'LISS + Full Body','4':'LISS + Cooper','c':'Cardio intermédiaire'};
+
+function getState(){try{return JSON.parse(localStorage.getItem('tp_state')||'{}')}catch(e){return{}}}
+function setState(s){localStorage.setItem('tp_state',JSON.stringify(s))}
+function getLog(){try{return JSON.parse(localStorage.getItem('tp_log')||'[]')}catch(e){return[]}}
+function setLog(l){localStorage.setItem('tp_log',JSON.stringify(l))}
+
+function toggleDone(id,session){
+  const card=document.getElementById(id);
+  card.classList.toggle('done');
+  const state=getState();
+  if(!state.done)state.done={};
+  state.done[id]=card.classList.contains('done');
+  setState(state);
+  updateProgress(session);
+}
+function saveWeight(input){
+  const state=getState();
+  if(!state.weights)state.weights={};
+  state.weights[input.dataset.ex]=input.value;
+  setState(state);
+}
+function updateProgress(session){
+  const ids=sessionExercises[session];
+  const done=ids.filter(id=>document.getElementById(id).classList.contains('done')).length;
+  const el=document.getElementById('prog'+session);
+  if(el)el.style.width=Math.round((done/ids.length)*100)+'%';
+}
+function resetSession(session){
+  sessionExercises[session].forEach(id=>{
+    document.getElementById(id).classList.remove('done');
+    const state=getState();if(state.done){state.done[id]=false;setState(state);}
+  });
+  updateProgress(session);
+  showToast('Séance réinitialisée');
+}
+function saveSession(session){
+  const weights={};
+  sessionExercises[session].forEach(id=>{
+    const input=document.querySelector(`[data-ex="${id}"]`);
+    if(input&&input.value)weights[id]=parseFloat(input.value);
+  });
+  const entry={id:Date.now(),date:new Date().toLocaleDateString('fr-BE',{day:'numeric',month:'long',year:'numeric'}),session,weights};
+  const log=getLog();log.unshift(entry);setLog(log);
+  renderLog();showToast('Séance sauvegardée !');
+}
+function renderLog(){
+  const log=getLog();
+  const container=document.getElementById('log-list');
+  if(!log.length){container.innerHTML='<div class="log-empty">Aucune séance enregistrée.<br>Sauvegarde ta première séance !</div>';return;}
+  container.innerHTML=log.map((entry,i)=>{
+    const color=sessionColors[entry.session]||'#888';
+    const hasWeights=Object.keys(entry.weights||{}).length>0;
+    const rows=hasWeights
+      ?Object.entries(entry.weights).map(([id,w])=>`<div class="log-exercise-row"><span class="log-ex-name">${exerciseNames[id]||id}</span><span class="log-ex-weight" style="color:${color}">${w} kg</span></div>`).join('')
+      :'<div class="log-exercise-row"><span class="log-ex-name" style="color:var(--faint)">Aucune charge enregistrée</span></div>';
+    return`<div class="log-entry"><div class="log-entry-header" onclick="toggleLogEntry(${i})"><div><div class="log-entry-date">${entry.date}</div><div class="log-entry-seance">${sessionNames[entry.session]||'Séance '+entry.session}</div></div><span class="log-entry-badge" style="background:${color}22;color:${color}">S${entry.session.toUpperCase()}</span></div><div class="log-entry-body" id="log-body-${i}">${rows}</div></div>`;
+  }).join('');
+}
+function toggleLogEntry(i){document.getElementById('log-body-'+i).classList.toggle('open')}
+function exportJSON(){
+  const data={state:getState(),log:getLog(),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='training_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(url);showToast('Export téléchargé');
+}
+function importJSON(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();renderLog();showToast('Import réussi !');}
+    catch(err){showToast('Erreur de fichier');}
+  };reader.readAsText(file);
+}
+function loadState(){
+  const state=getState();
+  if(state.done)Object.entries(state.done).forEach(([id,done])=>{const el=document.getElementById(id);if(el)el.classList.toggle('done',done);});
+  if(state.weights)Object.entries(state.weights).forEach(([id,val])=>{const input=document.querySelector(`[data-ex="${id}"]`);if(input)input.value=val;});
+  ['1','2','3','4','c'].forEach(s=>updateProgress(s));
+}
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.session').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`.tab[data-s="${n}"]`).classList.add('active');
+  document.getElementById('tab'+n).classList.add('active');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+loadState();renderLog();
+</script>
+</body>
+</html>
