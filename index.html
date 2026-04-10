@@ -24,7 +24,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .date-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
 .date-hint{font-size:11px;color:var(--faint)}
 
-/* GUIDE — fixed above tabs */
 .guide-wrap{padding:14px 16px 0}
 .guide-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
 .guide-toggle.open{border-radius:var(--radius) var(--radius) 0 0}
@@ -71,23 +70,45 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px}
 .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 
+/* TIMER ON REST VALUES */
+.timer-val{cursor:pointer;transition:color .15s;user-select:none;display:block}
+.timer-val.timer-running{color:var(--red) !important;animation:tmrpulse 1s infinite}
+@keyframes tmrpulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* 15 MIN SUPERSET TIMER BTN */
+.superset-timer-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--faint);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.superset-timer-btn.timer-running{border-color:var(--red);color:var(--red);background:rgba(255,71,87,.12)}
+
+/* SKIP BUTTON */
+.skip-btn{background:transparent;border:1px solid var(--faint);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 8px;transition:all .2s;line-height:1;flex-shrink:0}
+.skip-btn.active-skip{background:rgba(107,107,114,.2);border-color:var(--text);color:var(--text)}
+.exercise-card[data-status="skip"]{border-color:var(--faint);opacity:0.6}
+
+/* VARIANT TABS (S2 B2) */
+.variant-tabs{display:flex;padding:0 16px;gap:0;border-bottom:1px solid var(--border)}
+.vtab{padding:7px 16px;font-size:12px;font-weight:500;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:-1px;transition:all .15s}
+.vtab.active{color:var(--s2);border-bottom-color:var(--s2)}
+
 /* ONE-LINE LOG INPUT */
 .card-log{display:flex;align-items:center;gap:0;padding:0;border-top:1px solid var(--border);overflow:hidden}
-.log-half{flex:1;display:flex;align-items:stretch;justify-content:center;gap:6px;padding:0 10px;min-height:46px}
+.log-half{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 12px}
 .log-half+.log-half{border-left:1px solid var(--border)}
-.log-half-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;align-self:center}
+.log-half-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
 
 /* +/- SERIES COUNTER */
-.sc-btn{min-width:40px;align-self:stretch;border-radius:6px;border:1px solid var(--faint);background:var(--surface);color:var(--text);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:background .15s;touch-action:manipulation;-webkit-user-select:none}
+.sc-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--faint);background:var(--surface);color:var(--text);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:background .15s}
 .sc-btn:active{background:var(--faint)}
-.sc-val{font-family:'Bebas Neue',sans-serif;font-size:22px;width:36px;text-align:center;color:var(--text);background:transparent;border:none;outline:none;padding:0;-moz-appearance:textfield;align-self:center}.sc-val::-webkit-outer-spin-button,.sc-val::-webkit-inner-spin-button{-webkit-appearance:none}.w-val{font-family:'Bebas Neue',sans-serif;font-size:22px;width:52px;text-align:center;color:var(--text);background:transparent;border:none;outline:none;padding:0;-moz-appearance:textfield;align-self:center}.w-val::-webkit-outer-spin-button,.w-val::-webkit-inner-spin-button{-webkit-appearance:none}.w-val::placeholder{color:var(--faint);font-size:18px}.w-val.prefilled{color:var(--muted)}
-.sc-max{font-size:11px;color:var(--faint);align-self:center}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:22px;width:36px;text-align:center;color:var(--text);background:transparent;border:none;outline:none;padding:0;-moz-appearance:textfield}.sc-val::-webkit-outer-spin-button,.sc-val::-webkit-inner-spin-button{-webkit-appearance:none}
+.sc-max{font-size:11px;color:var(--faint)}
 
 /* WEIGHT INPUT */
-.w-unit{font-size:11px;color:var(--muted);white-space:nowrap;align-self:center}
+.w-input{background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 8px;width:62px;text-align:center}
+.w-input::placeholder{color:var(--faint)}
+.w-input.prefilled{color:var(--muted)}
+.w-unit{font-size:11px;color:var(--muted);white-space:nowrap}
 
 /* CARDIO DURATION (compact) */
-.dur-input{font-family:'Bebas Neue',sans-serif;font-size:22px;width:46px;text-align:center;color:var(--text);background:transparent;border:none;outline:none;padding:0;-moz-appearance:textfield;align-self:center}.dur-input::-webkit-outer-spin-button,.dur-input::-webkit-inner-spin-button{-webkit-appearance:none}.dur-input::placeholder{color:var(--faint);font-size:18px}
+.dur-input{background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 8px;width:56px;text-align:center}
 .dur-input::placeholder{color:var(--faint)}
 
 /* STATUS — 3 buttons */
@@ -123,7 +144,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 .global-log{background:var(--surface);border:1px solid var(--s4);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
 .global-log-label{font-size:12px;color:var(--s4);font-weight:500;flex:1}
-.global-log-input{font-family:'Bebas Neue',sans-serif;font-size:28px;width:50px;text-align:center;color:var(--s4);background:transparent;border:none;border-bottom:1px solid var(--s4);outline:none;padding:0;-moz-appearance:textfield}.global-log-input::-webkit-outer-spin-button,.global-log-input::-webkit-inner-spin-button{-webkit-appearance:none}.global-log-input::placeholder{color:var(--faint)}
+.global-log-input{background:var(--card);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 10px;width:56px;text-align:center}
 .global-log-unit{font-size:12px;color:var(--muted)}
 
 .btn-row{display:flex;gap:8px;margin-top:20px}
@@ -150,6 +171,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .log-ex-arrow{font-size:14px;font-weight:700;min-width:14px;text-align:center}
 .log-ex-detail{font-size:11px;color:var(--muted)}
 .log-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+/* DELETE LOG BUTTON */
+.log-delete-btn{background:none;border:none;color:var(--faint);font-size:15px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:color .2s;flex-shrink:0}
+.log-delete-btn:active{color:var(--red)}
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -170,7 +194,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <span class="date-hint">↑ tap pour changer</span>
 </div>
 
-<!-- GUIDE STATUTS — fixe, hors sessions -->
 <div class="guide-wrap">
   <div class="guide-toggle" onclick="toggleGuide()" id="guide-toggle">
     <span class="guide-toggle-label">ℹ️ Guide des statuts</span>
@@ -180,6 +203,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="guide-row"><div class="guide-status">😤 Trop dur</div><div class="guide-text">Pas fini, hors protocole, ou trop difficile.<div class="guide-next">→ Même poids la prochaine fois</div></div></div>
     <div class="guide-row"><div class="guide-status">✅ Bien fait</div><div class="guide-text">Accompli proprement avec l'effort approprié.<div class="guide-next">→ +1 à 2.5 kg la prochaine fois</div></div></div>
     <div class="guide-row"><div class="guide-status">💪 Trop facile</div><div class="guide-text">Trop léger, tu aurais pu faire beaucoup plus.<div class="guide-next">→ +2.5 à 5 kg la prochaine fois</div></div></div>
+    <div class="guide-row"><div class="guide-status">🚫 Passé</div><div class="guide-text">Exercice skippé aujourd'hui (fatigue, contrainte, etc.).<div class="guide-next">→ Tap à nouveau pour annuler</div></div></div>
   </div>
 </div>
 
@@ -201,87 +225,96 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="progress-bar"><div class="progress-fill s1" id="prog1"></div></div>
   <div class="section-label">Musculation — ≈ 30 min</div>
 
-  <!-- Helper macro: each exercise card uses inline HTML -->
-  <!-- s1e1: Fentes — reps only (no series target) -->
   <div class="exercise-card" id="s1e1">
-    <div class="ex-header"><div class="ex-num">01</div><div class="ex-info"><div class="ex-name">Fentes en déplacement</div><div class="ex-quick">Poids du corps (25% PDC quand possible)</div></div></div>
+    <div class="ex-header"><div class="ex-num">01</div><div class="ex-info"><div class="ex-name">Fentes en déplacement</div><div class="ex-quick">Poids du corps (25% PDC quand possible)</div></div><button class="skip-btn" onclick="setSkip('s1e1')">🚫</button></div>
     <div class="ex-stats"><div class="stat"><div class="stat-val">—</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">100</div><div class="stat-label">Reps cible</div></div><div class="stat"><div class="stat-val">—</div><div class="stat-label">Repos</div></div></div>
     <div class="card-log">
       <div class="log-half"><span class="log-half-label">Reps</span><button class="sc-btn" onclick="adjField('s1e1','reps',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e1-reps" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e1','reps',1)">+</button></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e1" oninput="saveField(this)"><span class="w-unit">kg total</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e1" oninput="saveField(this)"><span class="w-unit">kg total</span></div>
     </div>
     <div class="status-row" id="status-s1e1"><button class="status-btn" onclick="setStatus('s1e1','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e1','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e1','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e2">
-    <div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Hyperextension</div><div class="ex-quick">Poids du corps</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">3</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">15</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Hyperextension</div><div class="ex-quick">Poids du corps</div></div><button class="skip-btn" onclick="setSkip('s1e2')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">3</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">15</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="45" onclick="startRestTimer(this,45)">45s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e2','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e2-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e2','series',1)">+</button><span class="sc-max">/ 3</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e2" oninput="saveField(this)"><span class="w-unit">kg total</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e2" oninput="saveField(this)"><span class="w-unit">kg total</span></div>
     </div>
     <div class="status-row" id="status-s1e2"><button class="status-btn" onclick="setStatus('s1e2','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e2','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e2','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e3">
-    <div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Développé couché</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">90s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Développé couché</div></div><button class="skip-btn" onclick="setSkip('s1e3')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="90" onclick="startRestTimer(this,90)">90s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e3','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e3-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e3','series',1)">+</button><span class="sc-max">/ 4</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e3" oninput="saveField(this)"><span class="w-unit">kg barre</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e3" oninput="saveField(this)"><span class="w-unit">kg barre</span></div>
     </div>
     <div class="status-row" id="status-s1e3"><button class="status-btn" onclick="setStatus('s1e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e3','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e4">
-    <div class="ex-header"><div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Rowing buste penché</div><div class="ex-quick">Lat pulldown si machine prise</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">90s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Rowing buste penché</div><div class="ex-quick">Lat pulldown si machine prise</div></div><button class="skip-btn" onclick="setSkip('s1e4')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="90" onclick="startRestTimer(this,90)">90s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e4','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e4-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e4','series',1)">+</button><span class="sc-max">/ 4</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e4" oninput="saveField(this)"><span class="w-unit">kg</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e4" oninput="saveField(this)"><span class="w-unit">kg</span></div>
     </div>
     <div class="status-row" id="status-s1e4"><button class="status-btn" onclick="setStatus('s1e4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e4','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e5">
-    <div class="ex-header"><div class="ex-num">05</div><div class="ex-info"><div class="ex-name">Élévations latérales</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">05</div><div class="ex-info"><div class="ex-name">Élévations latérales</div></div><button class="skip-btn" onclick="setSkip('s1e5')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="45" onclick="startRestTimer(this,45)">45s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e5','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e5-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e5','series',1)">+</button><span class="sc-max">/ 4</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e5" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e5" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
     </div>
     <div class="status-row" id="status-s1e5"><button class="status-btn" onclick="setStatus('s1e5','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e5','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e5','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e6">
-    <div class="ex-header"><div class="ex-num">06</div><div class="ex-info"><div class="ex-name">Dips machine / Rebord banc</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">60s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">06</div><div class="ex-info"><div class="ex-name">Dips machine / Rebord banc</div></div><button class="skip-btn" onclick="setSkip('s1e6')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="60" onclick="startRestTimer(this,60)">60s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e6','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e6-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e6','series',1)">+</button><span class="sc-max">/ 4</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e6" oninput="saveField(this)"><span class="w-unit">kg machine</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e6" oninput="saveField(this)"><span class="w-unit">kg machine</span></div>
     </div>
     <div class="status-row" id="status-s1e6"><button class="status-btn" onclick="setStatus('s1e6','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e6','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e6','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="exercise-card" id="s1e7">
-    <div class="ex-header"><div class="ex-num">07</div><div class="ex-info"><div class="ex-name">Curl incliné</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent">45s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">07</div><div class="ex-info"><div class="ex-name">Curl incliné</div></div><button class="skip-btn" onclick="setSkip('s1e7')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s1-accent timer-val" data-secs="45" onclick="startRestTimer(this,45)">45s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e7','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e7-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e7','series',1)">+</button><span class="sc-max">/ 4</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s1e7" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s1e7" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
     </div>
     <div class="status-row" id="status-s1e7"><button class="status-btn" onclick="setStatus('s1e7','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e7','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e7','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Cardio — ≈ 30 min</div>
   <div class="hiit-card s1-bg exercise-card" id="s1e8">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s1-accent">08</div><div class="ex-info"><div class="hiit-title s1-accent">Intervalles tapis adapté</div><div class="hiit-detail"><strong>Protocole :</strong> 1 min 6-7 km/h incl. 8% / 1 min 4 km/h plat<br>Objectif 12 séries — fais le max, arrête si besoin<br>+ échauffement 5 min & retour au calme 5 min<br><em>Trop lourd pour le moment ? Log "Trop dur" et fais une séance Cardio à la place.</em></div></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s1-accent">A</div><div class="ex-info"><div class="hiit-title s1-accent">Intervalles tapis adapté</div><div class="hiit-detail"><strong>Protocole :</strong> 1 min 6-7 km/h incl. 8% / 1 min 4 km/h plat<br>Objectif 12 séries — fais le max, arrête si besoin<br>+ échauffement 5 min &amp; retour au calme 5 min<br><em>Trop lourd ? Log "Trop dur" et fais une séance Cardio à la place.</em></div></div><button class="skip-btn" onclick="setSkip('s1e8')">🚫</button></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s1e8','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1e8-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1e8','series',1)">+</button><span class="sc-max">/ 12</span></div>
       <div class="log-half" style="justify-content:center"><span style="font-size:12px;color:var(--muted)">séries complètes</span></div>
     </div>
     <div class="status-row" id="status-s1e8"><button class="status-btn" onclick="setStatus('s1e8','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1e8','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1e8','easy')">💪 Trop facile</button></div>
   </div>
+
+  <!-- IWT option in S1 -->
+  <div class="hiit-card s1-bg exercise-card" id="s1_iwt">
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s1-accent">B</div><div class="ex-info"><div class="hiit-title s1-accent">Japanese IWT 3-3</div><div class="hiit-detail">3 min marche rapide (6-7 km/h, incl. 5%) + 3 min marche lente (4 km/h, plat)<br>5 séries = 30 min · ≈ 250 kcal · prouvé pour brûler les graisses &amp; VO2 max</div></div><button class="skip-btn" onclick="setSkip('s1_iwt')">🚫</button></div>
+    <div class="card-log">
+      <div class="log-half"><button class="sc-btn" onclick="adjField('s1_iwt','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s1_iwt-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s1_iwt','series',1)">+</button><span class="sc-max">/ 5</span></div>
+      <div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="s1_iwt" oninput="saveField(this)"><span class="w-unit">min</span></div>
+    </div>
+    <div class="status-row" id="status-s1_iwt"><button class="status-btn" onclick="setStatus('s1_iwt','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1_iwt','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1_iwt','easy')">💪 Trop facile</button></div>
+  </div>
+
   <div class="btn-row"><button class="btn" onclick="resetSession('1')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('1')">Sauvegarder séance</button></div>
 </div>
 
@@ -292,60 +325,81 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <div class="section-label">Superset A — Max séries</div>
   <div class="exercise-card" id="s2e1a">
-    <div class="ex-header"><div class="ex-num">A1</div><div class="ex-info"><div class="ex-name">Développé incliné haltères</div><div class="ex-quick">Poitrine · 8 reps</div></div></div>
+    <div class="ex-header"><div class="ex-num">A1</div><div class="ex-info"><div class="ex-name">Développé incliné haltères</div><div class="ex-quick">Poitrine · 8 reps</div></div><button class="skip-btn" onclick="setSkip('s2e1a')">🚫</button></div>
     <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent">—</div><div class="stat-label">Repos</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s2e1a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2e1a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2e1a','series',1)">+</button><span class="sc-max">séries</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s2e1a" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s2e1a" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
     </div>
     <div class="status-row" id="status-s2e1a"><button class="status-btn" onclick="setStatus('s2e1a','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e1a','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e1a','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div><button class="superset-timer-btn" onclick="startSupersetTimer(this)">⏱ 15 min</button></div>
   <div class="exercise-card" id="s2e1b">
-    <div class="ex-header"><div class="ex-num">A2</div><div class="ex-info"><div class="ex-name">Rowing bûcheron</div><div class="ex-quick">Dos · 10 reps — puis repos 90s</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent">90s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">A2</div><div class="ex-info"><div class="ex-name">Rowing bûcheron</div><div class="ex-quick">Dos · 10 reps — puis repos 90s</div></div><button class="skip-btn" onclick="setSkip('s2e1b')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent timer-val" data-secs="90" onclick="startRestTimer(this,90)">90s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s2e1b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2e1b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2e1b','series',1)">+</button><span class="sc-max">séries</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s2e1b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s2e1b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
     </div>
     <div class="status-row" id="status-s2e1b"><button class="status-btn" onclick="setStatus('s2e1b','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e1b','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e1b','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Superset B — Max séries</div>
   <div class="exercise-card" id="s2e2a">
-    <div class="ex-header"><div class="ex-num">B1</div><div class="ex-info"><div class="ex-name">Squat / Hack squat</div><div class="ex-quick">Quadriceps · 8 reps</div></div></div>
+    <div class="ex-header"><div class="ex-num">B1</div><div class="ex-info"><div class="ex-name">Squat / Hack squat</div><div class="ex-quick">Quadriceps · 8 reps</div></div><button class="skip-btn" onclick="setSkip('s2e2a')">🚫</button></div>
     <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent">—</div><div class="stat-label">Repos</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s2e2a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2e2a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2e2a','series',1)">+</button><span class="sc-max">séries</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s2e2a" oninput="saveField(this)"><span class="w-unit">kg</span></div>
+      <div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s2e2a" oninput="saveField(this)"><span class="w-unit">kg</span></div>
     </div>
     <div class="status-row" id="status-s2e2a"><button class="status-btn" onclick="setStatus('s2e2a','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e2a','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e2a','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div><button class="superset-timer-btn" onclick="startSupersetTimer(this)">⏱ 15 min</button></div>
+
+  <!-- B2 : Romanian Deadlift avec onglets -->
   <div class="exercise-card" id="s2e2b">
-    <div class="ex-header"><div class="ex-num">B2</div><div class="ex-info"><div class="ex-name">Deadlift haltères</div><div class="ex-quick">Ischio · 10 reps — puis repos 90s</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent">90s</div><div class="stat-label">Repos</div></div></div>
+    <div class="ex-header"><div class="ex-num">B2</div><div class="ex-info"><div class="ex-name" id="s2e2b-name">Romanian Deadlift (barre)</div><div class="ex-quick">Ischio · 10 reps — puis repos 90s</div></div><button class="skip-btn" onclick="setSkip('s2e2b')">🚫</button></div>
+    <!-- Variant tabs -->
+    <div class="variant-tabs">
+      <button class="vtab active" id="s2e2b-tab-rdl" onclick="switchVariant('rdl',this)">RDL Barre</button>
+      <button class="vtab" id="s2e2b-tab-dl" onclick="switchVariant('dl',this)">Deadlift haltères</button>
+    </div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s2-accent timer-val" data-secs="90" onclick="startRestTimer(this,90)">90s</div><div class="stat-label">Repos ▶</div></div></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s2e2b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2e2b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2e2b','series',1)">+</button><span class="sc-max">séries</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s2e2b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
+      <!-- RDL weight -->
+      <div class="log-half" id="s2e2b-w-rdl"><input class="w-input" type="number" placeholder="—" data-field="weight_rdl" data-ex="s2e2b" oninput="saveField(this)"><span class="w-unit">kg barre</span></div>
+      <!-- DL weight -->
+      <div class="log-half" id="s2e2b-w-dl" style="display:none"><input class="w-input" type="number" placeholder="—" data-field="weight_dl" data-ex="s2e2b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div>
     </div>
     <div class="status-row" id="status-s2e2b"><button class="status-btn" onclick="setStatus('s2e2b','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e2b','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e2b','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Cardio — 60 min</div>
   <div class="hiit-card s2-bg exercise-card" id="s2e3">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s2-accent">C1</div><div class="ex-info"><div class="hiit-title s2-accent">Vélo Zone 2</div><div class="hiit-detail">75% FC Max · 40 min continu · résistance modérée</div></div></div>
-    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="s2e3" oninput="saveField(this)"><span class="w-unit">/ 40 min</span></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s2-accent">C1</div><div class="ex-info"><div class="hiit-title s2-accent">Vélo Zone 2</div><div class="hiit-detail">75% FC Max · 40 min continu · résistance modérée</div></div><button class="skip-btn" onclick="setSkip('s2e3')">🚫</button></div>
+    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="s2e3" oninput="saveField(this)"><span class="w-unit">/ 40 min</span></div></div>
     <div class="status-row" id="status-s2e3"><button class="status-btn" onclick="setStatus('s2e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e3','easy')">💪 Trop facile</button></div>
   </div>
   <div class="hiit-card s2-bg exercise-card" id="s2e4">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s2-accent">C2</div><div class="ex-info"><div class="hiit-title s2-accent">Vélo Intervalles</div><div class="hiit-detail">10 × 1 min résistance max / 1 min légère</div></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s2-accent">C2</div><div class="ex-info"><div class="hiit-title s2-accent">Vélo Intervalles</div><div class="hiit-detail">10 × 1 min résistance max / 1 min légère</div></div><button class="skip-btn" onclick="setSkip('s2e4')">🚫</button></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('s2e4','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2e4-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2e4','series',1)">+</button><span class="sc-max">/ 10</span></div>
       <div class="log-half" style="justify-content:center"><span style="font-size:12px;color:var(--muted)">séries</span></div>
     </div>
     <div class="status-row" id="status-s2e4"><button class="status-btn" onclick="setStatus('s2e4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2e4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2e4','easy')">💪 Trop facile</button></div>
   </div>
+
+  <!-- IWT option in S2 -->
+  <div class="hiit-card s2-bg exercise-card" id="s2_iwt">
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s2-accent">C3</div><div class="ex-info"><div class="hiit-title s2-accent">Japanese IWT 3-3</div><div class="hiit-detail">3 min marche rapide (6-7 km/h, incl. 5%) + 3 min marche lente (4 km/h, plat)<br>5 séries = 30 min · ≈ 250 kcal · prouvé pour brûler les graisses &amp; VO2 max</div></div><button class="skip-btn" onclick="setSkip('s2_iwt')">🚫</button></div>
+    <div class="card-log">
+      <div class="log-half"><button class="sc-btn" onclick="adjField('s2_iwt','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s2_iwt-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s2_iwt','series',1)">+</button><span class="sc-max">/ 5</span></div>
+      <div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="s2_iwt" oninput="saveField(this)"><span class="w-unit">min</span></div>
+    </div>
+    <div class="status-row" id="status-s2_iwt"><button class="status-btn" onclick="setStatus('s2_iwt','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2_iwt','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2_iwt','easy')">💪 Trop facile</button></div>
+  </div>
+
   <div class="btn-row"><button class="btn" onclick="resetSession('2')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('2')">Sauvegarder séance</button></div>
 </div>
 
@@ -355,62 +409,62 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="progress-bar"><div class="progress-fill s3" id="prog3"></div></div>
 
   <div class="section-label">Cardio libre Zone 2 — 45 min</div>
-  <div class="note-card" style="border-color:rgba(255,217,61,.3)">🫁 <strong>Respiration nasale</strong> — inspire et expire uniquement par le nez. Si tu dois ouvrir la bouche, baisse l'intensité.<br><br>Choix libre : course · vélo · rameur · elliptique · natation · marche inclinée — 75% FC Max.</div>
+  <div class="note-card" style="border-color:rgba(255,217,61,.3)">🫁 <strong>Respiration nasale</strong> — inspire et expire uniquement par le nez. Si tu dois ouvrir la bouche, baisse l'intensité.<br><br>Choix libre : course · vélo · rameur · elliptique · natation · marche inclinée · IWT — 75% FC Max.</div>
   <div class="hiit-card s3-bg exercise-card" id="s3e0">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s3-accent">01</div><div class="ex-info"><div class="hiit-title s3-accent">Cardio Zone 2 — libre</div></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s3-accent">01</div><div class="ex-info"><div class="hiit-title s3-accent">Cardio Zone 2 — libre</div></div><button class="skip-btn" onclick="setSkip('s3e0')">🚫</button></div>
     <div class="card-log">
       <div class="log-half">
         <select style="background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 6px;flex:1;max-width:140px" data-field="cardio_type" data-ex="s3e0" onchange="saveField(this)">
           <option value="">Type...</option>
-          <option>Course à pied</option><option>Vélo</option><option>Rameur</option><option>Elliptique</option><option>Marche inclinée</option><option>Natation</option><option>Autre</option>
+          <option>Course à pied</option><option>Vélo</option><option>Rameur</option><option>Elliptique</option><option>Marche inclinée</option><option>Natation</option><option>IWT 3-3</option><option>Autre</option>
         </select>
       </div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="s3e0" oninput="saveField(this)"><span class="w-unit">/ 45 min</span></div>
+      <div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="s3e0" oninput="saveField(this)"><span class="w-unit">/ 45 min</span></div>
     </div>
     <div class="status-row" id="status-s3e0"><button class="status-btn" onclick="setStatus('s3e0','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e0','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e0','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Superset A — Max séries</div>
   <div class="exercise-card" id="s3e1a">
-    <div class="ex-header"><div class="ex-num">A1</div><div class="ex-info"><div class="ex-name">Tirage vertical</div><div class="ex-quick">Dos · 8 reps</div></div></div>
+    <div class="ex-header"><div class="ex-num">A1</div><div class="ex-info"><div class="ex-name">Tirage vertical</div><div class="ex-quick">Dos · 8 reps</div></div><button class="skip-btn" onclick="setSkip('s3e1a')">🚫</button></div>
     <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">8</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">—</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e1a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e1a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e1a','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e1a" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e1a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e1a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e1a','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e1a" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e1a"><button class="status-btn" onclick="setStatus('s3e1a','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e1a','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e1a','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div><button class="superset-timer-btn" onclick="startSupersetTimer(this)">⏱ 15 min</button></div>
   <div class="exercise-card" id="s3e1b">
-    <div class="ex-header"><div class="ex-num">A2</div><div class="ex-info"><div class="ex-name">Overhead Press</div><div class="ex-quick">Épaules · 10 reps — puis repos 90s</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">90s</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e1b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e1b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e1b','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e1b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div></div>
+    <div class="ex-header"><div class="ex-num">A2</div><div class="ex-info"><div class="ex-name">Overhead Press</div><div class="ex-quick">Épaules · 10 reps — puis repos 90s</div></div><button class="skip-btn" onclick="setSkip('s3e1b')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent timer-val" data-secs="90" onclick="startRestTimer(this,90)">90s</div><div class="stat-label">Repos ▶</div></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e1b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e1b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e1b','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e1b" oninput="saveField(this)"><span class="w-unit">kg/haltère</span></div></div>
     <div class="status-row" id="status-s3e1b"><button class="status-btn" onclick="setStatus('s3e1b','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e1b','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e1b','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Isolation — 4 séries</div>
   <div class="exercise-card" id="s3e2">
-    <div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Leg extension</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">45s</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e2','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e2-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e2','series',1)">+</button><span class="sc-max">/ 4</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e2" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
+    <div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Leg extension</div></div><button class="skip-btn" onclick="setSkip('s3e2')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent timer-val" data-secs="45" onclick="startRestTimer(this,45)">45s</div><div class="stat-label">Repos ▶</div></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e2','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e2-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e2','series',1)">+</button><span class="sc-max">/ 4</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e2" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e2"><button class="status-btn" onclick="setStatus('s3e2','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e2','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e2','easy')">💪 Trop facile</button></div>
   </div>
   <div class="exercise-card" id="s3e3">
-    <div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Leg curl</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">45s</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e3','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e3-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e3','series',1)">+</button><span class="sc-max">/ 4</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e3" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
+    <div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Leg curl</div></div><button class="skip-btn" onclick="setSkip('s3e3')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">4</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent timer-val" data-secs="45" onclick="startRestTimer(this,45)">45s</div><div class="stat-label">Repos ▶</div></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e3','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e3-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e3','series',1)">+</button><span class="sc-max">/ 4</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e3" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e3"><button class="status-btn" onclick="setStatus('s3e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e3','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="section-label">Superset B — Max séries</div>
   <div class="exercise-card" id="s3e4a">
-    <div class="ex-header"><div class="ex-num">B1</div><div class="ex-info"><div class="ex-name">Extensions triceps poulie</div><div class="ex-quick">12 reps</div></div></div>
+    <div class="ex-header"><div class="ex-num">B1</div><div class="ex-info"><div class="ex-name">Extensions triceps poulie</div><div class="ex-quick">12 reps</div></div><button class="skip-btn" onclick="setSkip('s3e4a')">🚫</button></div>
     <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">—</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e4a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e4a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e4a','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e4a" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e4a','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e4a-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e4a','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e4a" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e4a"><button class="status-btn" onclick="setStatus('s3e4a','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e4a','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e4a','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div></div>
+  <div class="superset-divider"><div class="superset-line"></div><span class="superset-label">enchaîner sans repos</span><div class="superset-line"></div><button class="superset-timer-btn" onclick="startSupersetTimer(this)">⏱ 15 min</button></div>
   <div class="exercise-card" id="s3e4b">
-    <div class="ex-header"><div class="ex-num">B2</div><div class="ex-info"><div class="ex-name">Curl poulie</div><div class="ex-quick">12 reps — puis repos 60s</div></div></div>
-    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent">60s</div><div class="stat-label">Repos</div></div></div>
-    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e4b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e4b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e4b','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input type="number" inputmode="numeric" class="w-val" placeholder="—" data-field="weight" data-ex="s3e4b" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
+    <div class="ex-header"><div class="ex-num">B2</div><div class="ex-info"><div class="ex-name">Curl poulie</div><div class="ex-quick">12 reps — puis repos 60s</div></div><button class="skip-btn" onclick="setSkip('s3e4b')">🚫</button></div>
+    <div class="ex-stats"><div class="stat"><div class="stat-val">Max</div><div class="stat-label">Séries</div></div><div class="stat"><div class="stat-val">12</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val s3-accent timer-val" data-secs="60" onclick="startRestTimer(this,60)">60s</div><div class="stat-label">Repos ▶</div></div></div>
+    <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e4b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e4b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e4b','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e4b" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e4b"><button class="status-btn" onclick="setStatus('s3e4b','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e4b','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e4b','easy')">💪 Trop facile</button></div>
   </div>
   <div class="btn-row"><button class="btn" onclick="resetSession('3')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('3')">Sauvegarder séance</button></div>
@@ -422,8 +476,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="progress-bar"><div class="progress-fill s4" id="prog4"></div></div>
   <div class="section-label">Cardio LISS — 70 min</div>
   <div class="hiit-card s4-bg exercise-card" id="s4e1">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s4-accent">01</div><div class="ex-info"><div class="hiit-title s4-accent">Cardio modéré Z2</div><div class="hiit-detail">Footing / rando / vélo — 75% FC Max — 1h10</div></div></div>
-    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="s4e1" oninput="saveField(this)"><span class="w-unit">/ 70 min</span></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num s4-accent">01</div><div class="ex-info"><div class="hiit-title s4-accent">Cardio modéré Z2</div><div class="hiit-detail">Footing / rando / vélo — 75% FC Max — 1h10</div></div><button class="skip-btn" onclick="setSkip('s4e1')">🚫</button></div>
+    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="s4e1" oninput="saveField(this)"><span class="w-unit">/ 70 min</span></div></div>
     <div class="status-row" id="status-s4e1"><button class="status-btn" onclick="setStatus('s4e1','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e1','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e1','easy')">💪 Trop facile</button></div>
   </div>
 
@@ -431,14 +485,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="note-card">Enchaîner les 4 exercices sans repos · 10 reps chacun · Pompes sur les genoux si nécessaire.</div>
   <div class="global-log">
     <span class="global-log-label">💜 Tours complets en 20 min</span>
-    <input type="number" inputmode="numeric" class="global-log-input" placeholder="0" data-field="global_tours" data-ex="s4_wod" oninput="saveField(this)">
+    <input class="global-log-input" type="number" placeholder="0" data-field="global_tours" data-ex="s4_wod" oninput="saveField(this)">
     <span class="global-log-unit">tours</span>
   </div>
 
-  <div class="exercise-card" id="s4e2"><div class="ex-header"><div class="ex-num">01</div><div class="ex-info"><div class="ex-name">Burpees</div><div class="ex-quick">×10 reps / tour</div></div></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e2"><button class="status-btn" onclick="setStatus('s4e2','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e2','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e2','easy')">💪 Trop facile</button></div></div>
-  <div class="exercise-card" id="s4e3"><div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Air Squat</div><div class="ex-quick">×10 reps / tour</div></div></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e3"><button class="status-btn" onclick="setStatus('s4e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e3','easy')">💪 Trop facile</button></div></div>
-  <div class="exercise-card" id="s4e4"><div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Pompes</div><div class="ex-quick">Sur les genoux si nécessaire</div></div></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e4"><button class="status-btn" onclick="setStatus('s4e4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e4','easy')">💪 Trop facile</button></div></div>
-  <div class="exercise-card" id="s4e5"><div class="ex-header"><div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Sit Ups</div><div class="ex-quick">×10 reps / tour</div></div></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e5"><button class="status-btn" onclick="setStatus('s4e5','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e5','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e5','easy')">💪 Trop facile</button></div></div>
+  <div class="exercise-card" id="s4e2"><div class="ex-header"><div class="ex-num">01</div><div class="ex-info"><div class="ex-name">Burpees</div><div class="ex-quick">×10 reps / tour</div></div><button class="skip-btn" onclick="setSkip('s4e2')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e2"><button class="status-btn" onclick="setStatus('s4e2','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e2','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e2','easy')">💪 Trop facile</button></div></div>
+  <div class="exercise-card" id="s4e3"><div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Air Squat</div><div class="ex-quick">×10 reps / tour</div></div><button class="skip-btn" onclick="setSkip('s4e3')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e3"><button class="status-btn" onclick="setStatus('s4e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e3','easy')">💪 Trop facile</button></div></div>
+  <div class="exercise-card" id="s4e4"><div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Pompes</div><div class="ex-quick">Sur les genoux si nécessaire</div></div><button class="skip-btn" onclick="setSkip('s4e4')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e4"><button class="status-btn" onclick="setStatus('s4e4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e4','easy')">💪 Trop facile</button></div></div>
+  <div class="exercise-card" id="s4e5"><div class="ex-header"><div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Sit Ups</div><div class="ex-quick">×10 reps / tour</div></div><button class="skip-btn" onclick="setSkip('s4e5')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e5"><button class="status-btn" onclick="setStatus('s4e5','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e5','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e5','easy')">💪 Trop facile</button></div></div>
   <div class="btn-row"><button class="btn" onclick="resetSession('4')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('4')">Sauvegarder séance</button></div>
 </div>
 
@@ -457,28 +511,28 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="section-label">Choisir une option</div>
 
   <div class="hiit-card sc-bg exercise-card" id="sce1">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">A</div><div class="ex-info"><div class="hiit-title sc-accent">Marche inclinée Zone 2</div><div class="hiit-detail">45–55 min · 5.5-6.5 km/h · incl. 8-10% · ≈ 400 kcal</div></div></div>
-    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="sce1" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">A</div><div class="ex-info"><div class="hiit-title sc-accent">Marche inclinée Zone 2</div><div class="hiit-detail">45–55 min · 5.5-6.5 km/h · incl. 8-10% · ≈ 400 kcal</div></div><button class="skip-btn" onclick="setSkip('sce1')">🚫</button></div>
+    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="sce1" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
     <div class="status-row" id="status-sce1"><button class="status-btn" onclick="setStatus('sce1','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce1','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce1','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="hiit-card sc-bg exercise-card" id="sce2">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">B</div><div class="ex-info"><div class="hiit-title sc-accent">Vélo Zone 2</div><div class="hiit-detail">45 min · résistance modérée · 75% FC Max · ≈ 300 kcal</div></div></div>
-    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="sce2" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">B</div><div class="ex-info"><div class="hiit-title sc-accent">Vélo Zone 2</div><div class="hiit-detail">45 min · résistance modérée · 75% FC Max · ≈ 300 kcal</div></div><button class="skip-btn" onclick="setSkip('sce2')">🚫</button></div>
+    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="sce2" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
     <div class="status-row" id="status-sce2"><button class="status-btn" onclick="setStatus('sce2','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce2','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce2','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="hiit-card sc-bg exercise-card" id="sce3">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">C</div><div class="ex-info"><div class="hiit-title sc-accent">Marche rapide dehors</div><div class="hiit-detail">50–60 min · ≈ 10 000 pas · ≈ 300 kcal</div></div></div>
-    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="sce3" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">C</div><div class="ex-info"><div class="hiit-title sc-accent">Marche rapide dehors</div><div class="hiit-detail">50–60 min · ≈ 10 000 pas · ≈ 300 kcal</div></div><button class="skip-btn" onclick="setSkip('sce3')">🚫</button></div>
+    <div class="card-log"><div class="log-half" style="justify-content:center"><span class="log-half-label">Temps fait</span></div><div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="sce3" oninput="saveField(this)"><span class="w-unit">min</span></div></div>
     <div class="status-row" id="status-sce3"><button class="status-btn" onclick="setStatus('sce3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce3','easy')">💪 Trop facile</button></div>
   </div>
 
   <div class="hiit-card sc-bg exercise-card" id="sce4">
-    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">D</div><div class="ex-info"><div class="hiit-title sc-accent">Japanese IWT 3-3</div><div class="hiit-detail">3 min marche rapide (6-7 km/h, incl. 5%) + 3 min marche lente (4 km/h, plat)<br>5 séries = 30 min · ≈ 250 kcal · prouvé pour brûler les graisses & VO2 max</div></div></div>
+    <div class="ex-header" style="padding:0 0 10px"><div class="ex-num sc-accent">D</div><div class="ex-info"><div class="hiit-title sc-accent">Japanese IWT 3-3</div><div class="hiit-detail">3 min marche rapide (6-7 km/h, incl. 5%) + 3 min marche lente (4 km/h, plat)<br>5 séries = 30 min · ≈ 250 kcal · prouvé pour brûler les graisses &amp; VO2 max</div></div><button class="skip-btn" onclick="setSkip('sce4')">🚫</button></div>
     <div class="card-log">
       <div class="log-half"><button class="sc-btn" onclick="adjField('sce4','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-sce4-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('sce4','series',1)">+</button><span class="sc-max">/ 5</span></div>
-      <div class="log-half"><input type="number" inputmode="numeric" class="dur-input" placeholder="—" data-field="duration" data-ex="sce4" oninput="saveField(this)"><span class="w-unit">min</span></div>
+      <div class="log-half"><input class="dur-input" type="number" placeholder="—" data-field="duration" data-ex="sce4" oninput="saveField(this)"><span class="w-unit">min</span></div>
     </div>
     <div class="status-row" id="status-sce4"><button class="status-btn" onclick="setStatus('sce4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce4','easy')">💪 Trop facile</button></div>
   </div>
@@ -499,8 +553,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 <script>
 const sessionExercises={
-  '1':['s1e1','s1e2','s1e3','s1e4','s1e5','s1e6','s1e7','s1e8'],
-  '2':['s2e1a','s2e1b','s2e2a','s2e2b','s2e3','s2e4'],
+  '1':['s1e1','s1e2','s1e3','s1e4','s1e5','s1e6','s1e7','s1e8','s1_iwt'],
+  '2':['s2e1a','s2e1b','s2e2a','s2e2b','s2e3','s2e4','s2_iwt'],
   '3':['s3e0','s3e1a','s3e1b','s3e2','s3e3','s3e4a','s3e4b'],
   '4':['s4e1','s4e2','s4e3','s4e4','s4e5'],
   'c':['sce1','sce2','sce3','sce4']
@@ -508,8 +562,9 @@ const sessionExercises={
 const exNames={
   s1e1:'Fentes',s1e2:'Hyperextension',s1e3:'Développé couché',s1e4:'Rowing / Lat pulldown',
   s1e5:'Élévations latérales',s1e6:'Dips / Triceps press',s1e7:'Curl incliné',s1e8:'HIIT tapis',
-  s2e1a:'Développé incliné',s2e1b:'Rowing bûcheron',s2e2a:'Squat / Hack squat',s2e2b:'Deadlift haltères',
-  s2e3:'Vélo Zone 2',s2e4:'Vélo Intervalles',
+  s1_iwt:'IWT 3-3 (S1)',
+  s2e1a:'Développé incliné',s2e1b:'Rowing bûcheron',s2e2a:'Squat / Hack squat',s2e2b:'RDL / Deadlift',
+  s2e3:'Vélo Zone 2',s2e4:'Vélo Intervalles',s2_iwt:'IWT 3-3 (S2)',
   s3e0:'Cardio Zone 2',s3e1a:'Tirage vertical',s3e1b:'Overhead Press',
   s3e2:'Leg extension',s3e3:'Leg curl',s3e4a:'Triceps poulie',s3e4b:'Curl poulie',
   s4e1:'Cardio Z2',s4e2:'Burpees',s4e3:'Air Squat',s4e4:'Pompes',s4e5:'Sit Ups',
@@ -518,7 +573,7 @@ const exNames={
 };
 const sColors={'1':'#4ECDC4','2':'#FF6B6B','3':'#FFD93D','4':'#C77DFF','c':'#F97316'};
 const sNames={'1':'Full Body + HIIT','2':'Full Body + LISS','3':'LISS + Full Body','4':'LISS + Cooper','c':'Cardio intermédiaire'};
-const statusLabels={hard:'😤 Trop dur',good:'✅ Bien fait',easy:'💪 Trop facile'};
+const statusLabels={hard:'😤 Trop dur',good:'✅ Bien fait',easy:'💪 Trop facile',skip:'🚫 Passé'};
 const statusClasses={hard:'active-hard',good:'active-good',easy:'active-easy'};
 
 let currentDate=new Date();
@@ -528,10 +583,10 @@ function initDate(){document.getElementById('date-display').textContent=fmtDispl
 function openDatePicker(){const p=document.getElementById('date-picker');p.style.position='fixed';p.style.opacity='0';p.style.pointerEvents='auto';p.style.top='0';p.style.left='0';p.style.width='100%';p.style.height='100%';try{p.showPicker();}catch{p.click();}}
 function onDateChange(input){if(!input.value)return;currentDate=new Date(input.value+'T12:00:00');document.getElementById('date-display').textContent=fmtDisplay(currentDate);input.style.pointerEvents='none';}
 
-function getState(){try{return JSON.parse(localStorage.getItem('tp_state6')||'{}')}catch{return{}}}
-function setState(s){localStorage.setItem('tp_state6',JSON.stringify(s))}
-function getLog(){try{return JSON.parse(localStorage.getItem('tp_log6')||'[]')}catch{return[]}}
-function setLog(l){localStorage.setItem('tp_log6',JSON.stringify(l))}
+function getState(){try{return JSON.parse(localStorage.getItem('tp_state7')||'{}')}catch{return{}}}
+function setState(s){localStorage.setItem('tp_state7',JSON.stringify(s))}
+function getLog(){try{return JSON.parse(localStorage.getItem('tp_log7')||'[]')}catch{return[]}}
+function setLog(l){localStorage.setItem('tp_log7',JSON.stringify(l))}
 
 function saveField(input){
   const state=getState();
@@ -541,7 +596,6 @@ function saveField(input){
   setState(state);
 }
 
-// +/- counter for series/reps
 function adjField(exId,field,delta){
   const state=getState();
   if(!state.fields)state.fields={};
@@ -555,7 +609,7 @@ function adjField(exId,field,delta){
 }
 
 function onCounterInput(input){
-  const id=input.id; // scv-{exId}-{field}
+  const id=input.id;
   const parts=id.split('-');
   const field=parts[parts.length-1];
   const exId=parts.slice(1,parts.length-1).join('-');
@@ -567,6 +621,7 @@ function onCounterInput(input){
   setState(state);
   input.style.color=nv>0?'var(--text)':'var(--faint)';
 }
+
 function setStatus(exId,status){
   const state=getState();
   if(!state.statuses)state.statuses={};
@@ -579,6 +634,34 @@ function setStatus(exId,status){
     row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
     const map={hard:0,good:1,easy:2};
     if(map[status]!==undefined)row.children[map[status]].classList.add(statusClasses[status]);
+  }
+  // Update skip button state
+  const skipBtn=document.querySelector(`#${exId} .skip-btn`);
+  if(skipBtn)skipBtn.classList.remove('active-skip');
+  updateProgress(getSessionForEx(exId));
+}
+
+function setSkip(exId){
+  const state=getState();
+  if(!state.statuses)state.statuses={};
+  const isSkip=state.statuses[exId]==='skip';
+  if(isSkip){
+    delete state.statuses[exId];
+    setState(state);
+    const card=document.getElementById(exId);
+    if(card)card.removeAttribute('data-status');
+    const skipBtn=document.querySelector(`#${exId} .skip-btn`);
+    if(skipBtn)skipBtn.classList.remove('active-skip');
+  }else{
+    state.statuses[exId]='skip';
+    setState(state);
+    const card=document.getElementById(exId);
+    if(card)card.dataset.status='skip';
+    // Clear status row selection
+    const row=document.getElementById('status-'+exId);
+    if(row)row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
+    const skipBtn=document.querySelector(`#${exId} .skip-btn`);
+    if(skipBtn)skipBtn.classList.add('active-skip');
   }
   updateProgress(getSessionForEx(exId));
 }
@@ -607,12 +690,22 @@ function resetSession(session){
     const row=document.getElementById('status-'+id);
     if(row)row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
     document.querySelectorAll(`[data-ex="${id}"]`).forEach(inp=>{inp.value='';});
-    // Reset counters display
     ['series','reps'].forEach(f=>{const el=document.getElementById('scv-'+id+'-'+f);if(el){el.value='';el.style.color='var(--faint)';}});
+    // Reset skip buttons
+    const skipBtn=document.querySelector(`#${id} .skip-btn`);
+    if(skipBtn)skipBtn.classList.remove('active-skip');
   });
   if(session==='4'){
     const el=document.querySelector('[data-ex="s4_wod"]');if(el)el.value='';
     if(state.fields&&state.fields['s4_wod'])delete state.fields['s4_wod'];
+  }
+  // Reset B2 variant to RDL
+  if(session==='2'){
+    document.getElementById('s2e2b-w-rdl').style.display='flex';
+    document.getElementById('s2e2b-w-dl').style.display='none';
+    const vtabs=document.querySelectorAll('.vtab');
+    vtabs.forEach(t=>t.classList.remove('active'));
+    document.getElementById('s2e2b-tab-rdl').classList.add('active');
   }
   setState(state);updateProgress(session);showToast('Séance réinitialisée');
 }
@@ -623,7 +716,15 @@ function saveSession(session){
   sessionExercises[session].forEach(id=>{
     const status=(state.statuses||{})[id]||null;
     const fields=(state.fields||{})[id]||{};
-    if(status||Object.keys(fields).length)exercises[id]={status,weight:fields.weight||null,series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null};
+    if(id==='s2e2b'){
+      const v=fields.variant||'rdl';
+      const w=v==='rdl'?(fields.weight_rdl||null):(fields.weight_dl||null);
+      if(status||fields.series||fields.weight_rdl||fields.weight_dl)
+        exercises[id]={status,series:fields.series||null,weight:w,weight_rdl:fields.weight_rdl||null,weight_dl:fields.weight_dl||null,variant:v};
+    }else{
+      if(status||Object.keys(fields).length)
+        exercises[id]={status,weight:fields.weight||null,series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null};
+    }
   });
   if(session==='4'){
     const wf=(state.fields||{})['s4_wod'];
@@ -634,10 +735,9 @@ function saveSession(session){
   renderLog();showToast('Séance sauvegardée !');
 }
 
-// Build weight history per exercise across all log entries (log[0]=newest)
 function buildWeightHistory(){
   const log=getLog();
-  const hist={};// exId -> [val_at_log0, val_at_log1, ...]
+  const hist={};
   log.forEach(entry=>{
     Object.entries(entry.exercises||{}).forEach(([id,data])=>{
       if(!hist[id])hist[id]=[];
@@ -671,34 +771,63 @@ function renderLog(){
     const rows=Object.entries(entry.exercises||{}).map(([id,data])=>{
       const name=exNames[id]||id;
       const statusHtml=data.status?`<span class="log-ex-status" style="background:${color}22;color:${color}">${statusLabels[data.status]||data.status}</span>`:'';
-      const weightHtml=data.weight?`<span class="log-ex-weight" style="color:${color}">${data.weight} kg</span>`:'';
       const arrow=data.weight?arrowHtml(id,data.weight,i,log):'';
+      // Build weight display (handle s2e2b dual weights)
+      let weightHtml='';
+      if(data.weight_rdl||data.weight_dl){
+        const parts=[];
+        if(data.weight_rdl)parts.push(`${data.weight_rdl} kg barre`);
+        if(data.weight_dl)parts.push(`${data.weight_dl} kg hlt`);
+        if(parts.length)weightHtml=`<span class="log-ex-weight" style="color:${color}">${parts.join(' / ')}</span>`;
+      }else if(data.weight){
+        weightHtml=`<span class="log-ex-weight" style="color:${color}">${data.weight} kg</span>`;
+      }
       const details=[data.series?`${data.series} séries`:'',data.reps?`${data.reps} reps`:'',data.duration?`${data.duration} min`:'',data.tours?`${data.tours} tours`:'',data.cardio_type||''].filter(Boolean).join(' · ');
       return`<div class="log-ex-row"><span class="log-ex-name">${name}</span><div class="log-ex-right">${arrow}${weightHtml}${statusHtml}${details?`<span class="log-ex-detail">${details}</span>`:''}</div></div>`;
     }).join('');
-    return`<div class="log-entry"><div class="log-entry-header" onclick="toggleLogEntry(${i})"><div><div class="log-entry-date">${entry.date}</div><div class="log-entry-seance">${sNames[entry.session]||'Séance'}</div></div><span class="log-entry-badge" style="background:${color}22;color:${color}">S${entry.session.toUpperCase()}</span></div><div class="log-entry-body" id="log-body-${i}">${rows||'<div style="padding:8px 0;color:var(--faint);font-size:13px">Rien enregistré</div>'}</div></div>`;
+    return`<div class="log-entry">
+      <div class="log-entry-header" onclick="toggleLogEntry(${i})">
+        <div><div class="log-entry-date">${entry.date}</div><div class="log-entry-seance">${sNames[entry.session]||'Séance'}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="log-entry-badge" style="background:${color}22;color:${color}">S${entry.session.toUpperCase()}</span>
+          <button class="log-delete-btn" onclick="deleteLog(event,${i})" title="Supprimer">🗑️</button>
+        </div>
+      </div>
+      <div class="log-entry-body" id="log-body-${i}">${rows||'<div style="padding:8px 0;color:var(--faint);font-size:13px">Rien enregistré</div>'}</div>
+    </div>`;
   }).join('');
+}
+
+function deleteLog(e,i){
+  e.stopPropagation();
+  if(!confirm('Supprimer cette séance du carnet ?'))return;
+  const log=getLog();
+  log.splice(i,1);
+  setLog(log);
+  renderLog();
+  showToast('Séance supprimée');
 }
 
 function toggleLogEntry(i){document.getElementById('log-body-'+i).classList.toggle('open')}
 function toggleGuide(){document.getElementById('guide-body').classList.toggle('open');document.getElementById('guide-toggle').classList.toggle('open');}
 
-// Pre-fill weight from last log entry
 function prefillWeights(){
   const log=getLog();
   if(!log.length)return;
   const state=getState();
-  // Build latest weight per exercise (log is newest-first, so iterate from oldest to newest to get most recent)
   const latest={};
   for(let i=log.length-1;i>=0;i--){
     Object.entries(log[i].exercises||{}).forEach(([id,data])=>{
-      if(data.weight)latest[id]=data.weight;
+      if(data.weight)latest[id+':weight']=data.weight;
+      if(data.weight_rdl)latest[id+':weight_rdl']=data.weight_rdl;
+      if(data.weight_dl)latest[id+':weight_dl']=data.weight_dl;
     });
   }
-  Object.entries(latest).forEach(([exId,w])=>{
-    const curW=(state.fields||{})[exId]?.weight;
-    if(!curW){// Only pre-fill if nothing entered yet
-      const input=document.querySelector(`[data-ex="${exId}"][data-field="weight"]`);
+  Object.entries(latest).forEach(([key,w])=>{
+    const [id,field]=key.split(':');
+    const curW=(state.fields||{})[id]?.[field];
+    if(!curW){
+      const input=document.querySelector(`[data-ex="${id}"][data-field="${field}"]`);
       if(input){input.value=w;input.classList.add('prefilled');}
     }
   });
@@ -723,19 +852,37 @@ function importJSON(event){
 
 function loadState(){
   const state=getState();
-  // Statuses are not restored on load (used as checklist, saved to log on saveSession)
+  if(state.statuses){
+    Object.entries(state.statuses).forEach(([id,status])=>{
+      const card=document.getElementById(id);if(card)card.dataset.status=status;
+      if(status==='skip'){
+        const skipBtn=document.querySelector(`#${id} .skip-btn`);
+        if(skipBtn)skipBtn.classList.add('active-skip');
+      }else{
+        const row=document.getElementById('status-'+id);
+        if(row){row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');const map={hard:0,good:1,easy:2};if(map[status]!==undefined)row.children[map[status]].classList.add(statusClasses[status]);}
+      }
+    });
+  }
   if(state.fields){
     Object.entries(state.fields).forEach(([exId,fields])=>{
       Object.entries(fields).forEach(([field,val])=>{
         const input=document.querySelector(`[data-ex="${exId}"][data-field="${field}"]`);
         if(input){input.value=val;input.classList.remove('prefilled');}
-        // Update counter display for series/reps
         if(field==='series'||field==='reps'){
           const el=document.getElementById('scv-'+exId+'-'+field);
           const nv=parseInt(val)||0;
           if(el){el.value=nv>0?nv:'';el.style.color=nv>0?'var(--text)':'var(--faint)';}
         }
       });
+      // Restore s2e2b variant
+      if(exId==='s2e2b'&&fields.variant){
+        const v=fields.variant;
+        document.getElementById('s2e2b-w-rdl').style.display=v==='rdl'?'flex':'none';
+        document.getElementById('s2e2b-w-dl').style.display=v==='dl'?'flex':'none';
+        document.getElementById('s2e2b-tab-rdl').classList.toggle('active',v==='rdl');
+        document.getElementById('s2e2b-tab-dl').classList.toggle('active',v==='dl');
+      }
     });
   }
   ['1','2','3','4','c'].forEach(s=>updateProgress(s));
@@ -748,15 +895,94 @@ function switchTab(n){
   document.getElementById('tab'+n).classList.add('active');
 }
 
+function switchVariant(variant,btn){
+  document.getElementById('s2e2b-tab-rdl').classList.toggle('active',variant==='rdl');
+  document.getElementById('s2e2b-tab-dl').classList.toggle('active',variant==='dl');
+  document.getElementById('s2e2b-w-rdl').style.display=variant==='rdl'?'flex':'none';
+  document.getElementById('s2e2b-w-dl').style.display=variant==='dl'?'flex':'none';
+  const state=getState();
+  if(!state.fields)state.fields={};
+  if(!state.fields['s2e2b'])state.fields['s2e2b']={};
+  state.fields['s2e2b'].variant=variant;
+  setState(state);
+}
+
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 
+// ─── TIMER REST ───────────────────────────────────────────────
+function startRestTimer(el,secs){
+  if(el._timerInterval){
+    clearInterval(el._timerInterval);
+    el._timerInterval=null;
+    el.textContent=secs+'s';
+    el.classList.remove('timer-running');
+    return;
+  }
+  let remaining=secs;
+  el.classList.add('timer-running');
+  el.textContent=remaining+'s';
+  el._timerInterval=setInterval(()=>{
+    remaining--;
+    el.textContent=remaining+'s';
+    if(remaining<=0){
+      clearInterval(el._timerInterval);
+      el._timerInterval=null;
+      el.textContent=secs+'s';
+      el.classList.remove('timer-running');
+      playTimerEnd(false);
+      if(navigator.vibrate)navigator.vibrate([200,80,200]);
+    }
+  },1000);
+}
+
+// ─── TIMER SUPERSET 15 MIN ────────────────────────────────────
+function startSupersetTimer(btn){
+  if(btn._timerInterval){
+    clearInterval(btn._timerInterval);
+    btn._timerInterval=null;
+    btn.textContent='⏱ 15 min';
+    btn.classList.remove('timer-running');
+    return;
+  }
+  let remaining=900;
+  btn.classList.add('timer-running');
+  const fmt=s=>{const m=Math.floor(s/60);const sc=s%60;return`⏱ ${m}:${String(sc).padStart(2,'0')}`;};
+  btn.textContent=fmt(remaining);
+  btn._timerInterval=setInterval(()=>{
+    remaining--;
+    btn.textContent=fmt(remaining);
+    if(remaining<=0){
+      clearInterval(btn._timerInterval);
+      btn._timerInterval=null;
+      btn.textContent='⏱ 15 min';
+      btn.classList.remove('timer-running');
+      playTimerEnd(true);
+      if(navigator.vibrate)navigator.vibrate([300,100,300,100,300]);
+    }
+  },1000);
+}
+
+// ─── TIMER SOUND ──────────────────────────────────────────────
+function playTimerEnd(long){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const beeps=long?[[0,.4,660],[.35,.4,880],[.7,.5,1100]]:[[0,.3,880],[.35,.3,880]];
+    beeps.forEach(([t,dur,freq])=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='sine';osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.35,ctx.currentTime+t);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+dur);
+      osc.start(ctx.currentTime+t);osc.stop(ctx.currentTime+t+dur+0.05);
+    });
+  }catch(e){}
+}
+
 initDate();
-// Clear statuses from state so checklist starts fresh
-const _s=getState();delete _s.statuses;setState(_s);
 loadState();
 prefillWeights();
 renderLog();
-// Init counter colors
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
 </script>
 </body>
