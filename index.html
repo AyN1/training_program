@@ -45,6 +45,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .tab[data-s="1"].active{background:var(--s1)}.tab[data-s="2"].active{background:var(--s2)}
 .tab[data-s="3"].active{background:var(--s3)}.tab[data-s="4"].active{background:var(--s4)}
 .tab[data-s="c"].active{background:var(--sc);color:#fff}.tab[data-s="log"].active{background:var(--text)}
+.tab[data-s="meas"].active{background:#A78BFA;color:#0D0D0F}
 
 .session{display:none;padding:0 16px}.session.active{display:block}
 .session-header{margin-bottom:16px}
@@ -177,6 +178,39 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── MENSURATIONS ── */
+--meas:#A78BFA;
+.meas-accent{color:#A78BFA}
+.bf-card{background:var(--card);border:1px solid rgba(167,139,250,.35);border-radius:var(--radius);padding:18px 16px;margin-bottom:16px;text-align:center}
+.bf-pct{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:2px;color:#A78BFA;line-height:1}
+.bf-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.bf-cat{font-size:13px;font-weight:600;margin-top:6px}
+.bf-formula{font-size:11px;color:var(--faint);margin-top:4px}
+.meas-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.meas-input-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.meas-input-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.meas-input-row{display:flex;align-items:center;gap:6px}
+.meas-input{background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:22px;padding:5px 8px;width:72px;text-align:center;-moz-appearance:textfield}
+.meas-input::-webkit-outer-spin-button,.meas-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.meas-input::placeholder{color:var(--faint);font-size:18px}
+.meas-unit{font-size:12px;color:var(--muted)}
+.height-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px}
+.height-label{font-size:12px;color:var(--muted);flex:1}
+.meas-section-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#A78BFA;margin:16px 0 8px}
+.meas-hist-entry{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.meas-hist-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer}
+.meas-hist-date{font-size:13px;font-weight:500}
+.meas-hist-pct{font-size:12px;padding:3px 10px;border-radius:50px;background:rgba(167,139,250,.15);color:#A78BFA;font-weight:500}
+.meas-hist-body{display:none;padding:0 14px 12px;border-top:1px solid var(--border)}
+.meas-hist-body.open{display:block}
+.meas-hist-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.meas-hist-row:last-child{border-bottom:none}
+.meas-hist-key{color:var(--muted);font-size:12px}
+.meas-hist-val{font-weight:500;display:flex;align-items:center;gap:5px}
+.meas-arrow-up{color:#2ECC71;font-weight:700}.meas-arrow-dn{color:#FF4757;font-weight:700}.meas-arrow-eq{color:var(--faint)}
+.meas-del-btn{background:none;border:none;color:var(--faint);font-size:14px;cursor:pointer;padding:2px 5px;border-radius:6px;transition:color .2s;flex-shrink:0}
+.meas-del-btn:active{color:var(--red)}
 </style>
 </head>
 <body>
@@ -213,6 +247,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <button class="tab" data-s="3" onclick="switchTab('3')">S3</button>
   <button class="tab" data-s="4" onclick="switchTab('4')">S4</button>
   <button class="tab" data-s="c" onclick="switchTab('c')">🔥 Cardio</button>
+  <button class="tab" data-s="meas" onclick="switchTab('meas')">📏 Corps</button>
   <button class="tab" data-s="log" onclick="switchTab('log')">📋 Carnet</button>
 </div>
 
@@ -537,6 +572,80 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="status-row" id="status-sce4"><button class="status-btn" onclick="setStatus('sce4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce4','easy')">💪 Trop facile</button></div>
   </div>
   <div class="btn-row"><button class="btn" onclick="resetSession('c')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('c')">Sauvegarder séance</button></div>
+</div>
+
+<!-- ===== MENSURATIONS ===== -->
+<div class="session" id="tabmeas">
+  <div class="session-header">
+    <div class="session-name meas-accent">Corps &amp;<br>Mensurations</div>
+    <div class="session-meta"><span class="badge"><span class="dot" style="background:#A78BFA"></span>Suivi corporel</span><span class="badge">Body fat · Silhouette</span></div>
+  </div>
+
+  <!-- Taille (persistante) -->
+  <div class="height-row">
+    <span class="height-label">📐 Ta taille (pour le calcul body fat)</span>
+    <input class="meas-input" type="number" inputmode="numeric" id="meas-height" placeholder="171" style="width:62px" oninput="saveHeight(this)">
+    <span class="meas-unit">cm</span>
+  </div>
+
+  <!-- Body fat card (live) -->
+  <div class="bf-card" id="bf-card">
+    <div class="bf-pct" id="bf-pct">—</div>
+    <div class="bf-label">Masse grasse estimée</div>
+    <div class="bf-cat" id="bf-cat" style="color:var(--muted)">Renseigne cou + ventre pour calculer</div>
+    <div class="bf-formula">Méthode Navy US · cou + ventre + taille</div>
+  </div>
+
+  <!-- SECTION : Composition -->
+  <div class="meas-section-label">Composition corporelle</div>
+  <div class="meas-grid">
+    <div class="meas-input-card">
+      <div class="meas-input-label">⚖️ Poids</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="decimal" id="mf-poids" placeholder="—" oninput="updateBF()"><span class="meas-unit">kg</span></div>
+    </div>
+    <div class="meas-input-card">
+      <div class="meas-input-label">🔵 Tour de cou</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-cou" placeholder="—" oninput="updateBF()"><span class="meas-unit">cm</span></div>
+    </div>
+    <div class="meas-input-card">
+      <div class="meas-input-label">🟠 Tour ventre (nombril)</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-ventre" placeholder="—" oninput="updateBF()"><span class="meas-unit">cm</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION : Silhouette -->
+  <div class="meas-section-label">Silhouette &amp; Progression</div>
+  <div class="meas-grid">
+    <div class="meas-input-card">
+      <div class="meas-input-label">🟣 Tour d'épaules</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-epaules" placeholder="—"><span class="meas-unit">cm</span></div>
+    </div>
+    <div class="meas-input-card">
+      <div class="meas-input-label">🟢 Tour de poitrine</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-poitrine" placeholder="—"><span class="meas-unit">cm</span></div>
+    </div>
+    <div class="meas-input-card">
+      <div class="meas-input-label">💪 Tour de bras (bicep)</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-bras" placeholder="—"><span class="meas-unit">cm</span></div>
+    </div>
+    <div class="meas-input-card">
+      <div class="meas-input-label">🦵 Tour de cuisse</div>
+      <div class="meas-input-row"><input class="meas-input" type="number" inputmode="numeric" id="mf-cuisse" placeholder="—"><span class="meas-unit">cm</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:14px">
+    <button class="btn btn-primary" onclick="saveMeasurement()">💾 Sauvegarder mesures</button>
+  </div>
+
+  <!-- Historique mensurations -->
+  <div class="meas-section-label" style="margin-top:24px">Historique</div>
+  <div id="meas-hist-list"><div class="log-empty">Aucune mesure enregistrée.</div></div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="exportMeasJSON()">Exporter JSON</button>
+    <label class="btn" style="text-align:center;cursor:pointer">Importer JSON<input type="file" accept=".json" onchange="importMeasJSON(event)" style="display:none"></label>
+  </div>
 </div>
 
 <!-- ===== CARNET ===== -->
@@ -892,7 +1001,8 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.session').forEach(s=>s.classList.remove('active'));
   document.querySelector(`.tab[data-s="${n}"]`).classList.add('active');
-  document.getElementById('tab'+n).classList.add('active');
+  const tabId=n==='log'?'tablog':n==='meas'?'tabmeas':'tab'+n;
+  document.getElementById(tabId).classList.add('active');
 }
 
 function switchVariant(variant,btn){
@@ -984,6 +1094,163 @@ loadState();
 prefillWeights();
 renderLog();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
+initMeasurements();
+// ═══════════════════════════════════════════════
+// MENSURATIONS
+// ═══════════════════════════════════════════════
+function getMeas(){try{return JSON.parse(localStorage.getItem('tp_meas7')||'[]')}catch{return[]}}
+function setMeas(m){localStorage.setItem('tp_meas7',JSON.stringify(m))}
+function getMeasSettings(){try{return JSON.parse(localStorage.getItem('tp_meas_settings7')||'{}')}catch{return{}}}
+function setMeasSettings(s){localStorage.setItem('tp_meas_settings7',JSON.stringify(s))}
+
+const measFields=[
+  {id:'poids',label:'Poids',unit:'kg',emoji:'⚖️'},
+  {id:'cou',label:'Cou',unit:'cm',emoji:'🔵'},
+  {id:'ventre',label:'Ventre (nombril)',unit:'cm',emoji:'🟠'},
+  {id:'epaules',label:'Épaules',unit:'cm',emoji:'🟣'},
+  {id:'poitrine',label:'Poitrine',unit:'cm',emoji:'🟢'},
+  {id:'bras',label:'Bras (bicep)',unit:'cm',emoji:'💪'},
+  {id:'cuisse',label:'Cuisse',unit:'cm',emoji:'🦵'},
+];
+
+function initMeasurements(){
+  const s=getMeasSettings();
+  if(s.height){
+    const el=document.getElementById('meas-height');
+    if(el)el.value=s.height;
+  }
+  renderMeasHistory();
+  updateBF();
+}
+
+function saveHeight(input){
+  const s=getMeasSettings();
+  s.height=parseFloat(input.value)||0;
+  setMeasSettings(s);
+  updateBF();
+}
+
+function updateBF(){
+  const cou=parseFloat(document.getElementById('mf-cou').value)||0;
+  const ventre=parseFloat(document.getElementById('mf-ventre').value)||0;
+  const heightEl=document.getElementById('meas-height');
+  const h=parseFloat(heightEl?heightEl.value:0)||0;
+  const pctEl=document.getElementById('bf-pct');
+  const catEl=document.getElementById('bf-cat');
+  if(!cou||!ventre||!h){
+    pctEl.textContent='—';
+    catEl.textContent='Renseigne cou + ventre pour calculer';
+    catEl.style.color='var(--muted)';
+    return;
+  }
+  // Navy formula (homme) : 86.010 × log10(ventre - cou) - 70.041 × log10(h) + 36.76
+  const diff=ventre-cou;
+  if(diff<=0){pctEl.textContent='—';catEl.textContent='Ventre doit être > cou';catEl.style.color='var(--muted)';return;}
+  const bf=495/(1.0324-0.19077*Math.log10(diff)+0.15456*Math.log10(h))-450;
+  const bfR=Math.max(3,Math.round(bf*10)/10);
+  pctEl.textContent=bfR+'%';
+  // Category + color
+  let cat,color;
+  if(bfR<6){cat='Essentiel (très bas)';color='#60A5FA';}
+  else if(bfR<14){cat='Athlète';color='#2ECC71';}
+  else if(bfR<18){cat='Fitness';color='#A78BFA';}
+  else if(bfR<25){cat='Moyen — dans la norme';color='#FFD93D';}
+  else if(bfR<30){cat='Au-dessus de la norme';color='#F97316';}
+  else{cat='Obésité';color='#FF4757';}
+  catEl.textContent=cat;
+  catEl.style.color=color;
+}
+
+function saveMeasurement(){
+  const entry={id:Date.now(),date:fmtDisplay(currentDate)};
+  let hasData=false;
+  measFields.forEach(f=>{
+    const el=document.getElementById('mf-'+f.id);
+    const v=el?parseFloat(el.value)||null:null;
+    entry[f.id]=v;
+    if(v)hasData=true;
+  });
+  // Store calculated BF
+  const bfText=document.getElementById('bf-pct').textContent;
+  entry.bf=bfText!=='—'?parseFloat(bfText):null;
+  if(!hasData){showToast('Aucune valeur à sauvegarder');return;}
+  const meas=getMeas();
+  meas.unshift(entry);
+  setMeas(meas);
+  renderMeasHistory();
+  showToast('Mesures sauvegardées !');
+}
+
+function renderMeasHistory(){
+  const meas=getMeas();
+  const container=document.getElementById('meas-hist-list');
+  if(!meas.length){container.innerHTML='<div class="log-empty">Aucune mesure enregistrée.</div>';return;}
+  container.innerHTML=meas.map((entry,i)=>{
+    const bfHtml=entry.bf?`<span class="meas-hist-pct">${entry.bf}%</span>`:'';
+    const rows=measFields.map(f=>{
+      const v=entry[f.id];
+      if(!v)return'';
+      // Arrow vs previous entry
+      let arrow='';
+      for(let j=i+1;j<meas.length;j++){
+        const pv=meas[j][f.id];
+        if(pv!=null){
+          // For weight/ventre/cou/hanches: down = good (loss). For muscles: up = good.
+          const muscleFields=['epaules','poitrine','bras','cuisse'];
+          const diff=v-pv;
+          if(diff>0) arrow=muscleFields.includes(f.id)?'<span class="meas-arrow-up">↑</span>':'<span class="meas-arrow-dn">↑</span>';
+          else if(diff<0) arrow=muscleFields.includes(f.id)?'<span class="meas-arrow-dn">↓</span>':'<span class="meas-arrow-up">↓</span>';
+          else arrow='<span class="meas-arrow-eq">→</span>';
+          break;
+        }
+      }
+      return`<div class="meas-hist-row"><span class="meas-hist-key">${f.emoji} ${f.label}</span><div class="meas-hist-val">${arrow} ${v} ${f.unit}</div></div>`;
+    }).filter(Boolean).join('');
+    return`<div class="meas-hist-entry">
+      <div class="meas-hist-header" onclick="toggleMeasEntry(${i})">
+        <div><div class="meas-hist-date">${entry.date}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${bfHtml}
+          <button class="meas-del-btn" onclick="deleteMeas(event,${i})" title="Supprimer">🗑️</button>
+        </div>
+      </div>
+      <div class="meas-hist-body" id="meas-body-${i}">${rows||'<div style="padding:8px 0;color:var(--faint);font-size:13px">Aucune valeur</div>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMeasEntry(i){document.getElementById('meas-body-'+i).classList.toggle('open');}
+function deleteMeas(e,i){
+  e.stopPropagation();
+  if(!confirm('Supprimer cette entrée de mesures ?'))return;
+  const meas=getMeas();meas.splice(i,1);setMeas(meas);renderMeasHistory();showToast('Entrée supprimée');
+}
+
+function exportMeasJSON(){
+  const data={measurements:getMeas(),settings:getMeasSettings(),workoutState:getState(),workoutLog:getLog(),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='training_full_'+fmtISO(currentDate)+'.json';a.click();
+  URL.revokeObjectURL(url);showToast('Export complet téléchargé');
+}
+function importMeasJSON(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.measurements)setMeas(data.measurements);
+      if(data.settings)setMeasSettings(data.settings);
+      if(data.workoutState)setState(data.workoutState);
+      if(data.workoutLog)setLog(data.workoutLog);
+      if(data.state)setState(data.state);
+      if(data.log)setLog(data.log);
+      initMeasurements();loadState();renderLog();
+      showToast('Import réussi !');
+    }catch{showToast('Erreur de fichier');}
+  };reader.readAsText(file);
+}
+
 </script>
 </body>
 </html>
