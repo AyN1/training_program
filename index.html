@@ -8,6 +8,8 @@
 <title>Training Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
 <style>
 :root{--bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;--text:#F0EFE8;--muted:#6B6B72;--faint:#3A3A3D;--s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;--green:#2ECC71;--red:#FF4757;--radius:14px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -211,6 +213,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .meas-arrow-up{color:#2ECC71;font-weight:700}.meas-arrow-dn{color:#FF4757;font-weight:700}.meas-arrow-eq{color:var(--faint)}
 .meas-del-btn{background:none;border:none;color:var(--faint);font-size:14px;cursor:pointer;padding:2px 5px;border-radius:6px;transition:color .2s;flex-shrink:0}
 .meas-del-btn:active{color:var(--red)}
+
+/* BACKUP NUDGE BANNER */
+.backup-banner{display:none;margin:12px 16px 0;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.35);border-radius:var(--radius);padding:10px 14px;align-items:center;gap:10px}
+.backup-banner.show{display:flex}
+.backup-banner-text{flex:1;font-size:12px;color:var(--text);line-height:1.4}
+.backup-banner-btn{padding:6px 14px;border-radius:50px;border:1px solid var(--sc);background:transparent;color:var(--sc);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -219,6 +227,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="hero-label">Programme personnel</div>
   <div class="hero-title">TRAINING<br>PLAN</div>
   <div class="hero-sub">OMS · Huberman · 4 séances + cardio</div>
+</div>
+
+<div class="backup-banner" id="backup-banner">
+  <span class="backup-banner-text" id="backup-msg"></span>
+  <button class="backup-banner-btn" onclick="exportJSON()">Exporter</button>
 </div>
 
 <div class="date-bar">
@@ -947,7 +960,7 @@ function exportJSON(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='training_'+fmtISO(currentDate)+'.json';a.click();
-  URL.revokeObjectURL(url);showToast('Export téléchargé');
+  URL.revokeObjectURL(url);markExported();showToast('Export téléchargé');
 }
 
 function importJSON(event){
@@ -1089,12 +1102,38 @@ function playTimerEnd(long){
   }catch(e){}
 }
 
+function getBackupInfo(){try{return JSON.parse(localStorage.getItem('tp_backup')||'null')}catch{return null}}
+function setBackupInfo(i){localStorage.setItem('tp_backup',JSON.stringify(i))}
+function markExported(){
+  setBackupInfo({ts:Date.now(),count:getLog().length});
+  document.getElementById('backup-banner').classList.remove('show');
+}
+function checkBackupNudge(){
+  const log=getLog();
+  if(!log.length)return;
+  const info=getBackupInfo();
+  const banner=document.getElementById('backup-banner');
+  const msg=document.getElementById('backup-msg');
+  let text='';
+  if(!info){text='💾 Aucune sauvegarde — exporte tes données pour ne rien perdre.';}
+  else{
+    const days=Math.floor((Date.now()-info.ts)/86400000);
+    const newS=log.length-info.count;
+    if(days>10)text=`💾 Pas de sauvegarde depuis ${days} jours — exporte tes données.`;
+    else if(newS>=5)text=`💾 ${newS} nouvelles séances non sauvegardées.`;
+  }
+  if(text){msg.textContent=text;banner.classList.add('show');}
+}
+
 initDate();
 loadState();
 prefillWeights();
 renderLog();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
 initMeasurements();
+checkBackupNudge();
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 // ═══════════════════════════════════════════════
 // MENSURATIONS
 // ═══════════════════════════════════════════════
@@ -1231,7 +1270,7 @@ function exportMeasJSON(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='training_full_'+fmtISO(currentDate)+'.json';a.click();
-  URL.revokeObjectURL(url);showToast('Export complet téléchargé');
+  URL.revokeObjectURL(url);markExported();showToast('Export complet téléchargé');
 }
 function importMeasJSON(event){
   const file=event.target.files[0];if(!file)return;
