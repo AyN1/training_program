@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .superset-timer-btn.timer-running{border-color:var(--red);color:var(--red);background:rgba(255,71,87,.12)}
 
 /* SKIP BUTTON */
-.skip-btn{background:transparent;border:1px solid var(--faint);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 8px;transition:all .2s;line-height:1;flex-shrink:0}
+.skip-btn,.note-btn{background:transparent;border:1px solid var(--faint);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 8px;transition:all .2s;line-height:1;flex-shrink:0}
 .skip-btn.active-skip{background:rgba(107,107,114,.2);border-color:var(--text);color:var(--text)}
 .exercise-card[data-status="skip"]{border-color:var(--faint);opacity:0.6}
 
@@ -165,10 +165,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .log-entry-badge{font-size:11px;padding:3px 10px;border-radius:50px;font-weight:500}
 .log-entry-body{padding:0 16px 14px;border-top:1px solid var(--border);display:none}
 .log-entry-body.open{display:block}
-.log-ex-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px}
+.log-ex-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px}
 .log-ex-row:last-child{border-bottom:none}
 .log-ex-name{color:var(--muted);flex:1;font-size:12px}
-.log-ex-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.log-ex-right{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto}
 .log-ex-status{font-size:11px;padding:2px 7px;border-radius:20px}
 .log-ex-weight{font-size:13px;font-weight:500}
 .log-ex-arrow{font-size:14px;font-weight:700;min-width:14px;text-align:center}
@@ -219,6 +219,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .backup-banner.show{display:flex}
 .backup-banner-text{flex:1;font-size:12px;color:var(--text);line-height:1.4}
 .backup-banner-btn{padding:6px 14px;border-radius:50px;border:1px solid var(--sc);background:transparent;color:var(--sc);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* NOTES + FLUX SAUVEGARDE */
+.note-btn.has-note{background:rgba(78,205,196,.12);border-color:var(--s1)}
+.note-row{padding:8px 12px;border-top:1px solid var(--border)}
+.note-input{width:100%;background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 10px}
+.note-input::placeholder{color:var(--faint)}
+.session-note{margin-top:14px}
+.btn-ghost{flex:0 0 auto;padding:13px 10px;border:none;background:transparent;color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.btn-primary.has-draft::after{content:'●';color:var(--sc);font-size:9px;margin-left:7px;vertical-align:2px}
+.log-note{font-size:12px;color:var(--muted);font-style:italic;padding:8px 0 2px;line-height:1.4}
+.log-ex-note{flex-basis:100%;font-size:11px;color:var(--muted);font-style:italic;margin-top:-4px;padding-bottom:2px}
 </style>
 </head>
 <body>
@@ -363,7 +374,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="status-row" id="status-s1_iwt"><button class="status-btn" onclick="setStatus('s1_iwt','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s1_iwt','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s1_iwt','easy')">💪 Trop facile</button></div>
   </div>
 
-  <div class="btn-row"><button class="btn" onclick="resetSession('1')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('1')">Sauvegarder séance</button></div>
+  <div class="btn-row"><button class="btn-ghost" onclick="resetSession('1')">Réinitialiser</button><button class="btn btn-primary" id="savebtn-1" onclick="saveSession('1')">Sauvegarder séance</button></div>
 </div>
 
 <!-- ===== SÉANCE 2 ===== -->
@@ -448,7 +459,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="status-row" id="status-s2_iwt"><button class="status-btn" onclick="setStatus('s2_iwt','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s2_iwt','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s2_iwt','easy')">💪 Trop facile</button></div>
   </div>
 
-  <div class="btn-row"><button class="btn" onclick="resetSession('2')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('2')">Sauvegarder séance</button></div>
+  <div class="btn-row"><button class="btn-ghost" onclick="resetSession('2')">Réinitialiser</button><button class="btn btn-primary" id="savebtn-2" onclick="saveSession('2')">Sauvegarder séance</button></div>
 </div>
 
 <!-- ===== SÉANCE 3 ===== -->
@@ -515,7 +526,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="card-log"><div class="log-half"><button class="sc-btn" onclick="adjField('s3e4b','series',-1)">−</button><input type="number" inputmode="numeric" class="sc-val" id="scv-s3e4b-series" placeholder="0" oninput="onCounterInput(this)"><button class="sc-btn" onclick="adjField('s3e4b','series',1)">+</button><span class="sc-max">séries</span></div><div class="log-half"><input class="w-input" type="number" placeholder="—" data-field="weight" data-ex="s3e4b" oninput="saveField(this)"><span class="w-unit">kg machine</span></div></div>
     <div class="status-row" id="status-s3e4b"><button class="status-btn" onclick="setStatus('s3e4b','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s3e4b','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s3e4b','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="btn-row"><button class="btn" onclick="resetSession('3')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('3')">Sauvegarder séance</button></div>
+  <div class="btn-row"><button class="btn-ghost" onclick="resetSession('3')">Réinitialiser</button><button class="btn btn-primary" id="savebtn-3" onclick="saveSession('3')">Sauvegarder séance</button></div>
 </div>
 
 <!-- ===== SÉANCE 4 ===== -->
@@ -541,7 +552,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="exercise-card" id="s4e3"><div class="ex-header"><div class="ex-num">02</div><div class="ex-info"><div class="ex-name">Air Squat</div><div class="ex-quick">×10 reps / tour</div></div><button class="skip-btn" onclick="setSkip('s4e3')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e3"><button class="status-btn" onclick="setStatus('s4e3','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e3','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e3','easy')">💪 Trop facile</button></div></div>
   <div class="exercise-card" id="s4e4"><div class="ex-header"><div class="ex-num">03</div><div class="ex-info"><div class="ex-name">Pompes</div><div class="ex-quick">Sur les genoux si nécessaire</div></div><button class="skip-btn" onclick="setSkip('s4e4')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e4"><button class="status-btn" onclick="setStatus('s4e4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e4','easy')">💪 Trop facile</button></div></div>
   <div class="exercise-card" id="s4e5"><div class="ex-header"><div class="ex-num">04</div><div class="ex-info"><div class="ex-name">Sit Ups</div><div class="ex-quick">×10 reps / tour</div></div><button class="skip-btn" onclick="setSkip('s4e5')">🚫</button></div><div class="ex-stats"><div class="stat"><div class="stat-val">×10</div><div class="stat-label">Reps</div></div><div class="stat"><div class="stat-val">0s</div><div class="stat-label">Repos</div></div><div class="stat"><div class="stat-val s4-accent">Max</div><div class="stat-label">Tours</div></div></div><div class="status-row" id="status-s4e5"><button class="status-btn" onclick="setStatus('s4e5','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('s4e5','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('s4e5','easy')">💪 Trop facile</button></div></div>
-  <div class="btn-row"><button class="btn" onclick="resetSession('4')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('4')">Sauvegarder séance</button></div>
+  <div class="btn-row"><button class="btn-ghost" onclick="resetSession('4')">Réinitialiser</button><button class="btn btn-primary" id="savebtn-4" onclick="saveSession('4')">Sauvegarder séance</button></div>
 </div>
 
 <!-- ===== CARDIO ===== -->
@@ -584,7 +595,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
     <div class="status-row" id="status-sce4"><button class="status-btn" onclick="setStatus('sce4','hard')">😤 Trop dur</button><button class="status-btn" onclick="setStatus('sce4','good')">✅ Bien fait</button><button class="status-btn" onclick="setStatus('sce4','easy')">💪 Trop facile</button></div>
   </div>
-  <div class="btn-row"><button class="btn" onclick="resetSession('c')">Réinitialiser</button><button class="btn btn-primary" onclick="saveSession('c')">Sauvegarder séance</button></div>
+  <div class="btn-row"><button class="btn-ghost" onclick="resetSession('c')">Réinitialiser</button><button class="btn btn-primary" id="savebtn-c" onclick="saveSession('c')">Sauvegarder séance</button></div>
 </div>
 
 <!-- ===== MENSURATIONS ===== -->
@@ -709,6 +720,10 @@ function getState(){try{return JSON.parse(localStorage.getItem('tp_state7')||'{}
 function setState(s){localStorage.setItem('tp_state7',JSON.stringify(s))}
 function getLog(){try{return JSON.parse(localStorage.getItem('tp_log7')||'[]')}catch{return[]}}
 function setLog(l){localStorage.setItem('tp_log7',JSON.stringify(l))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function liveVal(id,field){const el=document.querySelector(`[data-ex="${id}"][data-field="${field}"]`);const v=el?el.value.trim():'';return v||null;}
+// "a une vraie valeur" — partagé par la pastille brouillon et les gardes de saveSession
+const hasVal=o=>!!o&&Object.entries(o).some(([k,v])=>k!=='variant'&&v!==''&&v!=null&&v!==0);
 
 function saveField(input){
   const state=getState();
@@ -716,6 +731,8 @@ function saveField(input){
   if(!state.fields[input.dataset.ex])state.fields[input.dataset.ex]={};
   state.fields[input.dataset.ex][input.dataset.field]=input.value;
   setState(state);
+  input.classList.remove('prefilled');
+  updateProgress(getSessionForEx(input.dataset.ex));
 }
 
 function adjField(exId,field,delta){
@@ -728,6 +745,7 @@ function adjField(exId,field,delta){
   setState(state);
   const el=document.getElementById('scv-'+exId+'-'+field);
   if(el){el.value=nv>0?nv:'';el.style.color=nv>0?'var(--text)':'var(--faint)';}
+  updateProgress(getSessionForEx(exId));
 }
 
 function onCounterInput(input){
@@ -742,6 +760,7 @@ function onCounterInput(input){
   state.fields[exId][field]=nv;
   setState(state);
   input.style.color=nv>0?'var(--text)':'var(--faint)';
+  updateProgress(getSessionForEx(exId));
 }
 
 function setStatus(exId,status){
@@ -789,6 +808,8 @@ function setSkip(exId){
 }
 
 function getSessionForEx(exId){
+  if(exId==='s4_wod')return'4';
+  if(exId.indexOf('snote_')===0)return exId.slice(6);
   for(const[s,ids] of Object.entries(sessionExercises)){if(ids.includes(exId))return s;}
   return null;
 }
@@ -800,9 +821,15 @@ function updateProgress(session){
   const done=ids.filter(id=>(state.statuses||{})[id]).length;
   const el=document.getElementById('prog'+session);
   if(el)el.style.width=Math.round((done/ids.length)*100)+'%';
+  // Pastille "brouillon non sauvegardé" sur le bouton Sauvegarder
+  const f=state.fields||{};
+  const draft=ids.some(id=>(state.statuses||{})[id]||hasVal(f[id]))||(session==='4'&&hasVal(f['s4_wod']))||hasVal(f['snote_'+session]);
+  const sb=document.getElementById('savebtn-'+session);
+  if(sb)sb.classList.toggle('has-draft',draft);
 }
 
-function resetSession(session){
+function resetSession(session,silent){
+  if(!silent&&!confirm('Réinitialiser la séance ? Les saisies non sauvegardées seront perdues.'))return;
   const state=getState();
   sessionExercises[session].forEach(id=>{
     if(state.statuses)delete state.statuses[id];
@@ -821,6 +848,10 @@ function resetSession(session){
     const el=document.querySelector('[data-ex="s4_wod"]');if(el)el.value='';
     if(state.fields&&state.fields['s4_wod'])delete state.fields['s4_wod'];
   }
+  // Note de séance
+  const sn=document.querySelector(`[data-ex="snote_${session}"]`);
+  if(sn)sn.value='';
+  if(state.fields&&state.fields['snote_'+session])delete state.fields['snote_'+session];
   // Reset B2 variant to RDL
   if(session==='2'){
     document.getElementById('s2e2b-w-rdl').style.display='flex';
@@ -829,7 +860,8 @@ function resetSession(session){
     vtabs.forEach(t=>t.classList.remove('active'));
     document.getElementById('s2e2b-tab-rdl').classList.add('active');
   }
-  setState(state);updateProgress(session);showToast('Séance réinitialisée');
+  setState(state);updateProgress(session);revealNotes();prefillWeights();
+  if(!silent)showToast('Séance réinitialisée');
 }
 
 function saveSession(session){
@@ -838,22 +870,29 @@ function saveSession(session){
   sessionExercises[session].forEach(id=>{
     const status=(state.statuses||{})[id]||null;
     const fields=(state.fields||{})[id]||{};
+    // Un poids prefill (gris, jamais saisi) n'est enregistré que si l'exercice a été fait
+    const performed=(status&&status!=='skip')||fields.series||fields.reps||fields.duration;
     if(id==='s2e2b'){
       const v=fields.variant||'rdl';
-      const w=v==='rdl'?(fields.weight_rdl||null):(fields.weight_dl||null);
-      if(status||fields.series||fields.weight_rdl||fields.weight_dl)
-        exercises[id]={status,series:fields.series||null,weight:w,weight_rdl:fields.weight_rdl||null,weight_dl:fields.weight_dl||null,variant:v};
+      const wr=fields.weight_rdl||(performed&&v==='rdl'?liveVal(id,'weight_rdl'):null);
+      const wd=fields.weight_dl||(performed&&v==='dl'?liveVal(id,'weight_dl'):null);
+      if(status||hasVal(fields))
+        exercises[id]={status,series:fields.series||null,weight:v==='rdl'?wr:wd,weight_rdl:wr,weight_dl:wd,variant:v,note:fields.note||null};
     }else{
-      if(status||Object.keys(fields).length)
-        exercises[id]={status,weight:fields.weight||null,series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null};
+      if(status||hasVal(fields))
+        exercises[id]={status,weight:fields.weight||(performed?liveVal(id,'weight'):null),series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null,note:fields.note||null};
     }
   });
   if(session==='4'){
     const wf=(state.fields||{})['s4_wod'];
     if(wf&&wf.global_tours)exercises['s4_wod']={status:null,tours:wf.global_tours};
   }
+  const snote=((state.fields||{})['snote_'+session]||{}).note||null;
+  if(!Object.keys(exercises).length&&!snote){showToast('Rien à sauvegarder');return;}
   const entry={id:Date.now(),date:fmtDisplay(currentDate),session,exercises};
+  if(snote)entry.note=snote;
   const log=getLog();log.unshift(entry);setLog(log);
+  resetSession(session,true);
   renderLog();showToast('Séance sauvegardée !');
 }
 
@@ -904,18 +943,19 @@ function renderLog(){
       }else if(data.weight){
         weightHtml=`<span class="log-ex-weight" style="color:${color}">${data.weight} kg</span>`;
       }
-      const details=[data.series?`${data.series} séries`:'',data.reps?`${data.reps} reps`:'',data.duration?`${data.duration} min`:'',data.tours?`${data.tours} tours`:'',data.cardio_type||''].filter(Boolean).join(' · ');
-      return`<div class="log-ex-row"><span class="log-ex-name">${name}</span><div class="log-ex-right">${arrow}${weightHtml}${statusHtml}${details?`<span class="log-ex-detail">${details}</span>`:''}</div></div>`;
+      const details=[data.series?`${data.series} séries`:'',data.reps?`${data.reps} reps`:'',data.duration?`${data.duration} min`:'',data.tours?`${data.tours} tours`:'',data.cardio_type?esc(data.cardio_type):''].filter(Boolean).join(' · ');
+      const noteHtml=data.note?`<div class="log-ex-note">📝 ${esc(data.note)}</div>`:'';
+      return`<div class="log-ex-row"><span class="log-ex-name">${name}</span><div class="log-ex-right">${arrow}${weightHtml}${statusHtml}${details?`<span class="log-ex-detail">${details}</span>`:''}</div>${noteHtml}</div>`;
     }).join('');
     return`<div class="log-entry">
       <div class="log-entry-header" onclick="toggleLogEntry(${i})">
-        <div><div class="log-entry-date">${entry.date}</div><div class="log-entry-seance">${sNames[entry.session]||'Séance'}</div></div>
+        <div><div class="log-entry-date">${esc(entry.date)}</div><div class="log-entry-seance">${sNames[entry.session]||'Séance'}</div></div>
         <div style="display:flex;align-items:center;gap:8px">
           <span class="log-entry-badge" style="background:${color}22;color:${color}">S${entry.session.toUpperCase()}</span>
           <button class="log-delete-btn" onclick="deleteLog(event,${i})" title="Supprimer">🗑️</button>
         </div>
       </div>
-      <div class="log-entry-body" id="log-body-${i}">${rows||'<div style="padding:8px 0;color:var(--faint);font-size:13px">Rien enregistré</div>'}</div>
+      <div class="log-entry-body" id="log-body-${i}">${entry.note?`<div class="log-note">📝 ${esc(entry.note)}</div>`:''}${rows||'<div style="padding:8px 0;color:var(--faint);font-size:13px">Rien enregistré</div>'}</div>
     </div>`;
   }).join('');
 }
@@ -948,7 +988,7 @@ function prefillWeights(){
   Object.entries(latest).forEach(([key,w])=>{
     const [id,field]=key.split(':');
     const curW=(state.fields||{})[id]?.[field];
-    if(!curW){
+    if(curW==null){
       const input=document.querySelector(`[data-ex="${id}"][data-field="${field}"]`);
       if(input){input.value=w;input.classList.add('prefilled');}
     }
@@ -967,7 +1007,7 @@ function importJSON(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();renderLog();showToast('Import réussi !');}
+    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();revealNotes();prefillWeights();renderLog();showToast('Import réussi !');}
     catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);
 }
@@ -1125,8 +1165,45 @@ function checkBackupNudge(){
   if(text){msg.textContent=text;banner.classList.add('show');}
 }
 
+// ─── NOTES (exercice + séance) ────────────────────────────────
+function injectNoteUI(){
+  document.querySelectorAll('.exercise-card').forEach(card=>{
+    const id=card.id;
+    const sr=card.querySelector('.status-row');
+    if(!id||!sr)return;
+    sr.insertAdjacentHTML('beforebegin',`<div class="note-row" id="noterow-${id}" style="display:none"><input class="note-input" type="text" placeholder="Note (substitution, matériel, salle…)" data-ex="${id}" data-field="note" oninput="saveField(this);syncNoteBtn(this)"></div>`);
+    const skip=card.querySelector('.skip-btn');
+    if(skip)skip.insertAdjacentHTML('beforebegin',`<button class="note-btn" id="notebtn-${id}" title="Note" onclick="toggleNote('${id}')">📝</button>`);
+  });
+  Object.keys(sessionExercises).forEach(s=>{
+    const row=document.querySelector(`#tab${s} .btn-row`);
+    if(row)row.insertAdjacentHTML('beforebegin',`<div class="session-note"><input class="note-input" type="text" placeholder="📝 Note de séance (salle, matériel, forme…)" data-ex="snote_${s}" data-field="note" oninput="saveField(this)"></div>`);
+  });
+}
+function toggleNote(id){
+  const row=document.getElementById('noterow-'+id);
+  if(!row)return;
+  const show=row.style.display==='none';
+  row.style.display=show?'block':'none';
+  if(show)row.querySelector('input').focus();
+}
+function syncNoteBtn(input){
+  const btn=document.getElementById('notebtn-'+input.dataset.ex);
+  if(btn)btn.classList.toggle('has-note',input.value.trim()!=='');
+}
+function revealNotes(){
+  document.querySelectorAll('.note-row').forEach(row=>{
+    const input=row.querySelector('input');
+    if(!input)return;
+    row.style.display=input.value.trim()!==''?'block':'none';
+    syncNoteBtn(input);
+  });
+}
+
 initDate();
+injectNoteUI();
 loadState();
+revealNotes();
 prefillWeights();
 renderLog();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
@@ -1284,7 +1361,7 @@ function importMeasJSON(event){
       if(data.workoutLog)setLog(data.workoutLog);
       if(data.state)setState(data.state);
       if(data.log)setLog(data.log);
-      initMeasurements();loadState();renderLog();
+      initMeasurements();loadState();revealNotes();prefillWeights();renderLog();
       showToast('Import réussi !');
     }catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);
