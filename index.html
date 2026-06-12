@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .superset-timer-btn.timer-running{border-color:var(--red);color:var(--red);background:rgba(255,71,87,.12)}
 
 /* SKIP BUTTON */
-.skip-btn,.note-btn{background:transparent;border:1px solid var(--faint);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 8px;transition:all .2s;line-height:1;flex-shrink:0}
+.skip-btn,.note-btn,.sub-btn{background:transparent;border:1px solid var(--faint);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 8px;transition:all .2s;line-height:1;flex-shrink:0}
 .skip-btn.active-skip{background:rgba(107,107,114,.2);border-color:var(--text);color:var(--text)}
 .exercise-card[data-status="skip"]{border-color:var(--faint);opacity:0.6}
 
@@ -228,6 +228,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .qnote-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .qnote-chip{padding:5px 12px;border-radius:50px;border:1px solid var(--faint);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s}
 .qnote-chip:active{background:var(--faint);color:var(--text)}
+.qnote-chip.sub-revert{color:var(--muted);border-style:dashed}
+.sub-btn.has-sub{background:rgba(199,125,255,.15);border-color:var(--s4);color:var(--s4)}
+.sub-row{padding:8px 12px;border-top:1px solid var(--border)}
+.sub-badge{display:inline-block;font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--s4);border:1px solid var(--s4);border-radius:20px;padding:1px 7px;margin-left:7px;vertical-align:1px}
+.log-ex-sub{color:var(--s4)}
 .session-note{margin-top:14px}
 .btn-ghost{flex:0 0 auto;padding:13px 10px;border:none;background:transparent;color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .btn-primary.has-draft::after{content:'●';color:var(--sc);font-size:9px;margin-left:7px;vertical-align:2px}
@@ -726,7 +731,7 @@ function setLog(l){localStorage.setItem('tp_log7',JSON.stringify(l))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function liveVal(id,field){const el=document.querySelector(`[data-ex="${id}"][data-field="${field}"]`);const v=el?el.value.trim():'';return v||null;}
 // "a une vraie valeur" — partagé par la pastille brouillon et les gardes de saveSession
-const hasVal=o=>!!o&&Object.entries(o).some(([k,v])=>k!=='variant'&&v!==''&&v!=null&&v!==0);
+const hasVal=o=>!!o&&Object.entries(o).some(([k,v])=>k!=='variant'&&k!=='sub'&&v!==''&&v!=null&&v!==0);
 
 function saveField(input){
   const state=getState();
@@ -836,7 +841,11 @@ function resetSession(session,silent){
   const state=getState();
   sessionExercises[session].forEach(id=>{
     if(state.statuses)delete state.statuses[id];
-    if(state.fields)delete state.fields[id];
+    if(state.fields){
+      // post-save (silent) : on garde la substitution affichée jusqu'au reset manuel
+      if(silent&&state.fields[id]&&state.fields[id].sub)state.fields[id]={sub:state.fields[id].sub};
+      else delete state.fields[id];
+    }
     const card=document.getElementById(id);
     if(card)card.removeAttribute('data-status');
     const row=document.getElementById('status-'+id);
@@ -863,7 +872,7 @@ function resetSession(session,silent){
     vtabs.forEach(t=>t.classList.remove('active'));
     document.getElementById('s2e2b-tab-rdl').classList.add('active');
   }
-  setState(state);updateProgress(session);revealNotes();prefillWeights();
+  setState(state);updateProgress(session);revealNotes();revealSubs();prefillWeights();
   if(!silent)showToast('Séance réinitialisée');
 }
 
@@ -883,7 +892,7 @@ function saveSession(session){
         exercises[id]={status,series:fields.series||null,weight:v==='rdl'?wr:wd,weight_rdl:wr,weight_dl:wd,variant:v,note:fields.note||null};
     }else{
       if(status||hasVal(fields))
-        exercises[id]={status,weight:fields.weight||(performed?liveVal(id,'weight'):null),series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null,note:fields.note||null};
+        exercises[id]={status,weight:fields.weight||(performed?liveVal(id,'weight'):null),series:fields.series||null,reps:fields.reps||null,duration:fields.duration||null,cardio_type:fields.cardio_type||null,note:fields.note||null,sub:fields.sub||null};
     }
   });
   if(session==='4'){
@@ -916,7 +925,7 @@ function arrowHtml(exId,currentWeight,entryIdx,log){
   const cw=parseFloat(currentWeight);
   for(let j=entryIdx+1;j<log.length;j++){
     const prev=log[j].exercises?.[exId];
-    if(prev&&prev.weight){
+    if(prev&&prev.weight&&!prev.sub){
       const pw=parseFloat(prev.weight);
       if(cw>pw)return'<span class="log-ex-arrow" style="color:#2ECC71">↑</span>';
       if(cw<pw)return'<span class="log-ex-arrow" style="color:#FF4757">↓</span>';
@@ -933,9 +942,10 @@ function renderLog(){
   container.innerHTML=log.map((entry,i)=>{
     const color=sColors[entry.session]||'#888';
     const rows=Object.entries(entry.exercises||{}).map(([id,data])=>{
-      const name=exNames[id]||id;
+      const baseName=exNames[id]||id;
+      const name=data.sub?`${baseName} → <span class="log-ex-sub">${esc(data.sub)}</span>`:baseName;
       const statusHtml=data.status?`<span class="log-ex-status" style="background:${color}22;color:${color}">${statusLabels[data.status]||data.status}</span>`:'';
-      const arrow=data.weight?arrowHtml(id,data.weight,i,log):'';
+      const arrow=(data.weight&&!data.sub)?arrowHtml(id,data.weight,i,log):'';
       // Build weight display (handle s2e2b dual weights)
       let weightHtml='';
       if(data.weight_rdl||data.weight_dl){
@@ -983,13 +993,14 @@ function prefillWeights(){
   const latest={};
   for(let i=log.length-1;i>=0;i--){
     Object.entries(log[i].exercises||{}).forEach(([id,data])=>{
-      if(data.weight)latest[id+':weight']=data.weight;
+      if(data.weight&&!data.sub)latest[id+':weight']=data.weight;
       if(data.weight_rdl)latest[id+':weight_rdl']=data.weight_rdl;
       if(data.weight_dl)latest[id+':weight_dl']=data.weight_dl;
     });
   }
   Object.entries(latest).forEach(([key,w])=>{
     const [id,field]=key.split(':');
+    if(field==='weight'&&(state.fields||{})[id]?.sub)return; // exercice substitué → poids vierge
     const curW=(state.fields||{})[id]?.[field];
     if(curW==null){
       const input=document.querySelector(`[data-ex="${id}"][data-field="${field}"]`);
@@ -1010,7 +1021,7 @@ function importJSON(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();revealNotes();prefillWeights();renderLog();showToast('Import réussi !');}
+    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();revealNotes();revealSubs();prefillWeights();renderLog();showToast('Import réussi !');}
     catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);
 }
@@ -1218,10 +1229,78 @@ function revealNotes(){
   });
 }
 
+// ─── SUBSTITUTIONS (équivalents — salle différente) ───────────
+const SUBS={
+  s1e4:['Lat pulldown','Tirage horizontal machine','Rowing haltère 1 bras'],
+  s1e6:['Dips barres parallèles','Pompes serrées','Extension triceps poulie'],
+  s3e1a:['Tractions assistées','Tractions','Pull-over poulie'],
+  s3e2:['Squat gobelet','Presse à cuisses','Fentes'],
+  s3e3:['Romanian deadlift','Good morning','Nordic curl assisté'],
+  s3e4a:['Dips banc','Pompes serrées','Extension haltère nuque'],
+  s3e4b:['Curl haltères','Curl barre EZ','Curl incliné']
+};
+const subOriginalName={};
+function injectSubUI(){
+  Object.keys(SUBS).forEach(id=>{
+    const card=document.getElementById(id);
+    if(!card)return;
+    const nameEl=card.querySelector('.ex-name');
+    if(nameEl)subOriginalName[id]=nameEl.textContent;
+    const opts=SUBS[id].map((t,i)=>`<button class="qnote-chip" onclick="setSub('${id}',${i})">${t}</button>`).join('')
+      +`<button class="qnote-chip sub-revert" onclick="revertSub('${id}')">↩︎ Exercice prévu</button>`;
+    const sr=card.querySelector('.status-row');
+    if(sr)sr.insertAdjacentHTML('beforebegin',`<div class="sub-row" id="subrow-${id}" style="display:none"><div class="qnote-chips">${opts}</div></div>`);
+    const ref=card.querySelector('.note-btn')||card.querySelector('.skip-btn');
+    if(ref)ref.insertAdjacentHTML('beforebegin',`<button class="sub-btn" id="subbtn-${id}" title="Remplacer l'exercice" onclick="toggleSub('${id}')">⇄</button>`);
+  });
+}
+function toggleSub(id){
+  const row=document.getElementById('subrow-'+id);
+  if(row)row.style.display=row.style.display==='none'?'block':'none';
+}
+function applySubName(id,sub){
+  const card=document.getElementById(id);if(!card)return;
+  const nameEl=card.querySelector('.ex-name');
+  if(nameEl){
+    if(sub)nameEl.innerHTML=`${esc(sub)}<span class="sub-badge">remplacé</span>`;
+    else nameEl.textContent=subOriginalName[id]||nameEl.textContent;
+  }
+  const btn=document.getElementById('subbtn-'+id);
+  if(btn)btn.classList.toggle('has-sub',!!sub);
+}
+function setSub(id,idx){
+  const sub=SUBS[id]&&SUBS[id][idx];if(sub==null)return;
+  const state=getState();
+  if(!state.fields)state.fields={};
+  if(!state.fields[id])state.fields[id]={};
+  state.fields[id].sub=sub;
+  setState(state);
+  // efface uniquement un poids prefill gris, jamais une valeur tapée à la main
+  const w=document.querySelector(`[data-ex="${id}"][data-field="weight"]`);
+  if(w&&w.classList.contains('prefilled')){w.value='';w.classList.remove('prefilled');}
+  applySubName(id,sub);
+  const row=document.getElementById('subrow-'+id);if(row)row.style.display='none';
+  updateProgress(getSessionForEx(id));
+}
+function revertSub(id){
+  const state=getState();
+  if(state.fields&&state.fields[id]){delete state.fields[id].sub;if(!Object.keys(state.fields[id]).length)delete state.fields[id];setState(state);}
+  applySubName(id,null);
+  const row=document.getElementById('subrow-'+id);if(row)row.style.display='none';
+  prefillWeights();
+  updateProgress(getSessionForEx(id));
+}
+function revealSubs(){
+  const state=getState();
+  Object.keys(SUBS).forEach(id=>applySubName(id,((state.fields||{})[id]||{}).sub||null));
+}
+
 initDate();
 injectNoteUI();
+injectSubUI();
 loadState();
 revealNotes();
+revealSubs();
 prefillWeights();
 renderLog();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
@@ -1379,7 +1458,7 @@ function importMeasJSON(event){
       if(data.workoutLog)setLog(data.workoutLog);
       if(data.state)setState(data.state);
       if(data.log)setLog(data.log);
-      initMeasurements();loadState();revealNotes();prefillWeights();renderLog();
+      initMeasurements();loadState();revealNotes();revealSubs();prefillWeights();renderLog();
       showToast('Import réussi !');
     }catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);
