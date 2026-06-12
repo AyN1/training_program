@@ -225,6 +225,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .note-row{padding:8px 12px;border-top:1px solid var(--border)}
 .note-input{width:100%;background:var(--surface);border:1px solid var(--faint);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 10px}
 .note-input::placeholder{color:var(--faint)}
+.qnote-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.qnote-chip{padding:5px 12px;border-radius:50px;border:1px solid var(--faint);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s}
+.qnote-chip:active{background:var(--faint);color:var(--text)}
 .session-note{margin-top:14px}
 .btn-ghost{flex:0 0 auto;padding:13px 10px;border:none;background:transparent;color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .btn-primary.has-draft::after{content:'●';color:var(--sc);font-size:9px;margin-left:7px;vertical-align:2px}
@@ -1166,12 +1169,27 @@ function checkBackupNudge(){
 }
 
 // ─── NOTES (exercice + séance) ────────────────────────────────
+const QUICK_NOTES=['machine prise','autre salle','élastiques'];
+function addQuickNote(exId,idx){
+  const text=QUICK_NOTES[idx];if(text==null)return;
+  const input=document.querySelector(`[data-ex="${exId}"][data-field="note"]`);
+  if(!input)return;
+  const cur=input.value.trim();
+  if(!cur){input.value=text;}
+  else{
+    const parts=cur.split(' · ').map(p=>p.trim());
+    if(parts.some(p=>p.toLowerCase()===text.toLowerCase()))return; // déjà présent → pas de doublon
+    input.value=cur+' · '+text;
+  }
+  saveField(input);syncNoteBtn(input);
+}
 function injectNoteUI(){
+  const chips=id=>QUICK_NOTES.map((t,i)=>`<button class="qnote-chip" onclick="addQuickNote('${id}',${i})">+ ${t}</button>`).join('');
   document.querySelectorAll('.exercise-card').forEach(card=>{
     const id=card.id;
     const sr=card.querySelector('.status-row');
     if(!id||!sr)return;
-    sr.insertAdjacentHTML('beforebegin',`<div class="note-row" id="noterow-${id}" style="display:none"><input class="note-input" type="text" placeholder="Note (substitution, matériel, salle…)" data-ex="${id}" data-field="note" oninput="saveField(this);syncNoteBtn(this)"></div>`);
+    sr.insertAdjacentHTML('beforebegin',`<div class="note-row" id="noterow-${id}" style="display:none"><div class="qnote-chips">${chips(id)}</div><input class="note-input" type="text" placeholder="Note (substitution, matériel, salle…)" data-ex="${id}" data-field="note" oninput="saveField(this);syncNoteBtn(this)"></div>`);
     const skip=card.querySelector('.skip-btn');
     if(skip)skip.insertAdjacentHTML('beforebegin',`<button class="note-btn" id="notebtn-${id}" title="Note" onclick="toggleNote('${id}')">📝</button>`);
   });
