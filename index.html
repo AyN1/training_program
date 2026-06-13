@@ -13,6 +13,8 @@
 <style>
 :root{--bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;--text:#F0EFE8;--muted:#6B6B72;--faint:#55555E;--s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;--green:#2ECC71;--red:#FF4757;--radius:14px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+/* iOS : pas de double-tap-zoom sur les contrôles (pinch-zoom global conservé) */
+button,.timer-val,.date-display,.guide-toggle,.log-entry-header,.meas-hist-header{touch-action:manipulation}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:60px}
 
 .hero{padding:44px 20px 20px;text-align:center}
