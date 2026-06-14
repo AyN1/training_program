@@ -27,6 +27,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .date-display{font-size:14px;font-weight:500;cursor:pointer;border-bottom:1px dashed var(--faint);padding-bottom:1px}
 .date-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
 .date-hint{font-size:11px;color:var(--faint)}
+.suggest-wrap{display:flex;justify-content:center;padding:12px 16px 0}
+.suggest-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer}
+.suggest-chip strong{font-weight:600}
 
 .guide-wrap{padding:14px 16px 0}
 .guide-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
@@ -186,6 +189,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* BARRE STICKY TIMER DE REPOS (INT1) */
+.rest-bar{position:fixed;left:0;right:0;bottom:0;display:none;align-items:center;gap:12px;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:900}
+.rest-bar.show{display:flex}
+.rest-bar-name{flex:1;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rest-bar-time{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);min-width:58px;text-align:right;font-variant-numeric:tabular-nums}
+.rest-bar-stop{padding:8px 18px;border-radius:50px;border:1px solid var(--faint);background:transparent;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;flex-shrink:0}
+
 /* ── MENSURATIONS ── */
 --meas:#A78BFA;
 .meas-accent{color:#A78BFA}
@@ -263,6 +273,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <span class="date-display" id="date-display" onclick="openDatePicker()"></span>
   <input type="date" class="date-input" id="date-picker" onchange="onDateChange(this)">
   <span class="date-hint">↑ tap pour changer</span>
+</div>
+
+<div class="suggest-wrap">
+  <button class="suggest-chip" id="suggest-chip" type="button">Séance suggérée</button>
 </div>
 
 <div class="guide-wrap">
@@ -695,7 +709,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
 </div>
 
-<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v5 · 13 juin 2026</div>
+<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v7 · 14 juin 2026</div>
+
+<div class="rest-bar" id="rest-bar">
+  <span class="rest-bar-name" id="rest-bar-name"></span>
+  <span class="rest-bar-time" id="rest-bar-time"></span>
+  <button class="rest-bar-stop" type="button" onclick="clearRest()">Stop ✕</button>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -913,7 +933,7 @@ function saveSession(session){
   if(snote)entry.note=snote;
   const log=getLog();log.unshift(entry);setLog(log);
   resetSession(session,true);
-  renderLog();showToast('Séance sauvegardée !');
+  renderLog();renderSuggestion();showToast('Séance sauvegardée !');
 }
 
 function buildWeightHistory(){
@@ -941,6 +961,23 @@ function arrowHtml(exId,currentWeight,entryIdx,log){
     }
   }
   return'<span class="log-ex-arrow" style="color:var(--faint)">·</span>';
+}
+
+// ─── SÉANCE SUGGÉRÉE (QW5) ────────────────────────────────────
+// Rotation active S1→S2→S3→S1 ; S4 et Cardio ignorés ; défaut S1.
+function suggestNextSession(){
+  const rot={'1':'2','2':'3','3':'1'};
+  for(const e of getLog()){              // carnet du plus récent au plus ancien
+    if(rot[e.session])return rot[e.session];
+  }
+  return '1';                            // vide, ou uniquement S4/Cardio
+}
+function renderSuggestion(){
+  const chip=document.getElementById('suggest-chip');
+  if(!chip)return;
+  const s=suggestNextSession();
+  chip.innerHTML=`<span class="dot" style="background:${sColors[s]}"></span>Séance suggérée : <strong style="color:${sColors[s]}">S${s}</strong>`;
+  chip.onclick=()=>switchTab(s); // suggestion uniquement : ne change l'onglet que sur tap
 }
 
 function renderLog(){
@@ -987,7 +1024,7 @@ function deleteLog(e,i){
   const log=getLog();
   log.splice(i,1);
   setLog(log);
-  renderLog();
+  renderLog();renderSuggestion();
   showToast('Séance supprimée');
 }
 
@@ -1029,7 +1066,7 @@ function importJSON(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();revealNotes();revealSubs();prefillWeights();renderLog();showToast('Import réussi !');}
+    try{const data=JSON.parse(e.target.result);if(data.state)setState(data.state);if(data.log)setLog(data.log);loadState();revealNotes();revealSubs();prefillWeights();renderLog();renderSuggestion();showToast('Import réussi !');}
     catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);
 }
@@ -1106,31 +1143,51 @@ async function requestWakeLock(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!wakeLock)requestWakeLock();});
 
-// ─── TIMER REST ───────────────────────────────────────────────
-function startRestTimer(el,secs){
-  requestWakeLock();
-  if(el._timerInterval){
-    clearInterval(el._timerInterval);
-    el._timerInterval=null;
-    el.textContent=secs+'s';
-    el.classList.remove('timer-running');
+// ─── TIMER REST (Date.now → anti-dérive iOS) + barre sticky ───
+// Un seul timer de repos actif à la fois. L'affichage est recalculé depuis
+// l'horloge murale à chaque tick : aucune dérive si l'onglet passe en
+// arrière-plan (au retour, le décompte est juste, ou la fin se déclenche).
+let restState=null; // {endAt, secs, el, name, ticker}
+
+function clearRest(){
+  if(!restState)return;
+  clearInterval(restState.ticker);
+  if(restState.el){restState.el.textContent=restState.secs+'s';restState.el.classList.remove('timer-running');}
+  restState=null;
+  document.getElementById('rest-bar').classList.remove('show');
+}
+
+function tickRest(){
+  if(!restState)return;
+  const remMs=restState.endAt-Date.now();
+  if(remMs<=0){
+    const el=restState.el, secs=restState.secs;
+    clearInterval(restState.ticker);
+    restState=null;
+    if(el){el.textContent=secs+'s';el.classList.remove('timer-running');}
+    document.getElementById('rest-bar').classList.remove('show');
+    playTimerEnd(false);
+    if(navigator.vibrate)navigator.vibrate([200,80,200]);
     return;
   }
-  let remaining=secs;
+  const txt=Math.ceil(remMs/1000)+'s';
+  if(restState.el)restState.el.textContent=txt;
+  const t=document.getElementById('rest-bar-time');if(t)t.textContent=txt;
+}
+
+function startRestTimer(el,secs){
+  requestWakeLock();
+  if(restState&&restState.el===el){clearRest();return;}   // retap le même → stop
+  if(restState)clearRest();                                // un seul actif à la fois
+  const card=el.closest('.exercise-card');
+  const nameEl=card&&card.querySelector('.ex-name');
+  const name=nameEl?(((nameEl.childNodes[0]&&nameEl.childNodes[0].textContent)||nameEl.textContent)||'').trim()||'Repos':'Repos';
+  restState={endAt:Date.now()+secs*1000,secs,el,name,ticker:null};
   el.classList.add('timer-running');
-  el.textContent=remaining+'s';
-  el._timerInterval=setInterval(()=>{
-    remaining--;
-    el.textContent=remaining+'s';
-    if(remaining<=0){
-      clearInterval(el._timerInterval);
-      el._timerInterval=null;
-      el.textContent=secs+'s';
-      el.classList.remove('timer-running');
-      playTimerEnd(false);
-      if(navigator.vibrate)navigator.vibrate([200,80,200]);
-    }
-  },1000);
+  document.getElementById('rest-bar-name').textContent=name;
+  document.getElementById('rest-bar').classList.add('show');
+  tickRest();
+  restState.ticker=setInterval(tickRest,250);
 }
 
 // ─── TIMER SUPERSET 15 MIN ────────────────────────────────────
@@ -1342,6 +1399,7 @@ revealNotes();
 revealSubs();
 prefillWeights();
 renderLog();
+renderSuggestion();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
 initMeasurements();
 checkBackupNudge();
@@ -1497,7 +1555,7 @@ function importMeasJSON(event){
       if(data.workoutLog)setLog(data.workoutLog);
       if(data.state)setState(data.state);
       if(data.log)setLog(data.log);
-      initMeasurements();loadState();revealNotes();revealSubs();prefillWeights();renderLog();
+      initMeasurements();loadState();revealNotes();revealSubs();prefillWeights();renderLog();renderSuggestion();
       showToast('Import réussi !');
     }catch{showToast('Erreur de fichier');}
   };reader.readAsText(file);

@@ -14,6 +14,9 @@ Légende : ✅ fait · 🟡 partiel · ⏸️ reporté volontairement · ⬜ à 
 | **v2** | Chips de notes rapides (« machine prise » · « autre salle » · « élastiques ») | `v2` |
 | **v3** | ST3 — substitution rapide (7 exercices machines/poulies) | `v3` |
 | **v4** | QW6 (lisibilité, cibles tactiles, wake lock, zoom réactivé) + QW4 (steppers de poids ±2,5 kg) | `v4` |
+| **v5** | Marqueur de version visible + fixes iOS (service worker network-first, double-tap-zoom sur les boutons) | `v5` |
+| **v6** | QW5 — chip « séance suggérée » (rotation S1→S2→S3→S1, S4/Cardio ignorés) | `v6` |
+| **v7** | INT1 (scope min) — barre sticky de timer de repos, basée sur `Date.now()` (anti-dérive iOS), un seul timer actif | `v7` |
 
 ---
 
@@ -34,12 +37,12 @@ Légende : ✅ fait · 🟡 partiel · ⏸️ reporté volontairement · ⬜ à 
 - ✅ **QW1 — Sécuriser save/reset** (confirmation, reset discret, pastille brouillon, anti-double-save) — *v1*
 - ✅ **QW2 — Fix prefill** (un poids suggéré validé est bien sauvegardé) — *v1*
 - ✅ **QW4 — Steppers poids ±2,5 kg** autour de chaque champ poids (moins de clavier ; +/- confirme le prefill gris) — *v4*
-- ⬜ **QW5 — Chip « séance suggérée du jour »** (rotation S1→S2→S3→S4 d'après le dernier log)
+- ✅ **QW5 — Chip « séance suggérée du jour »** (rotation S1→S2→S3→**S1** ; S4 et Cardio ignorés ; défaut S1) — *v6*
 - ✅ **QW6 — Lisibilité & cibles tactiles** (`--faint` éclairci, +/- agrandis, inputs 16px → fin de l'auto-zoom iOS) **+ wake lock** (écran allumé en séance) **+ zoom réactivé** (`maximum-scale` retiré) — *v4*
 
 **Impact fort / effort moyen**
 - ⏸️ **INT2 — Mode focus** (cartes repliables, seul l'exercice en cours déplié) — *reporté à la demande*
-- ⬜ **INT1 — Timer de repos sticky** (barre fixe bas d'écran) + démarrage auto à l'incrément de série ; passer le timer en horodatage (`Date.now`) pour corriger la dérive iOS en arrière-plan
+- 🟡 **INT1 — Timer de repos sticky** : barre fixe bas d'écran + timer basé sur `Date.now()` (anti-dérive iOS) + un seul timer actif à la fois — *v7* ; reste (optionnel, hors scope pour l'instant) : démarrage auto du timer à l'incrément de série
 - ⬜ **INT5 — Bottom nav fixe** (Séances / Cardio / Corps / Carnet) à portée de pouce
 - ⬜ **INT3 — Historique par exercice** (tap sur le nom → 5 dernières perfs)
 - ⬜ **Écran récap post-sauvegarde** (volume, exercices validés, PR éventuels)
@@ -88,8 +91,10 @@ Principe directeur : le **créneau de mouvement** est l'unité stable du program
 
 ## Prochaines étapes recommandées
 
-1. **QW5** — chip « séance suggérée ».
-2. **INT1 → INT5/INT2** — timer sticky puis bottom nav puis mode focus (à penser ensemble, plus gros chantier visuel).
-3. **INT4** — dates ISO, prérequis avant tout graphique de progression.
-4. **ST3 Batch 2** / ajustement de la table `SUBS`.
-5. **ST1** (data-driven) si on veut industrialiser ST2/ST4.
+1. **INT5 / INT2** — bottom nav puis mode focus (gros chantier visuel ; le timer sticky INT1 est posé, à empiler avec la bottom nav).
+2. **INT4** — dates ISO, prérequis avant tout graphique de progression.
+3. **ST3 Batch 2** / ajustement de la table `SUBS`.
+4. **ST1** (data-driven) si on veut industrialiser ST2/ST4.
+5. **INT1 (reste)** — démarrage auto du timer à l'incrément de série, si souhaité.
+
+> Réintégrer S4 dans la rotation de QW5 quand la séance S4 sera (re)mise au programme : ajouter `'3':'4','4':'1'` au lieu de `'3':'1'`.
