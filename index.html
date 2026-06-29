@@ -738,7 +738,7 @@ body.focus-on .exercise-card.is-done .focus-check{display:inline-block;color:var
   </div>
 </div>
 
-<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v11 · 30 juin 2026</div>
+<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v12 · 30 juin 2026</div>
 
 <div class="ex-hist-overlay" id="ex-hist-overlay" onclick="closeExHistory()">
   <div class="ex-hist-modal" onclick="event.stopPropagation()">
@@ -1324,6 +1324,7 @@ function tickRest(){
 }
 
 function startRestTimer(el,secs){
+  unlockAudio();          // tap utilisateur → débloque l'AudioContext pour le bip de fin
   requestWakeLock();
   if(restState&&restState.el===el){clearRest();return;}   // retap le même → stop
   if(restState)clearRest();                                // un seul actif à la fois
@@ -1340,6 +1341,7 @@ function startRestTimer(el,secs){
 
 // ─── TIMER SUPERSET 15 MIN ────────────────────────────────────
 function startSupersetTimer(btn){
+  unlockAudio();          // idem : débloque l'audio au tap pour le bip de fin
   requestWakeLock();
   if(btn._timerInterval){
     clearInterval(btn._timerInterval);
@@ -1366,10 +1368,23 @@ function startSupersetTimer(btn){
   },1000);
 }
 
-// ─── TIMER SOUND ──────────────────────────────────────────────
+// ─── TIMER SOUND (AudioContext unique, débloqué au tap) ───────
+// iOS : l'AudioContext démarre suspendu et ne peut être débloqué que pendant
+// un geste utilisateur. On en crée UN SEUL, débloqué au tap de démarrage du
+// timer, réutilisé ensuite pour que le bip de fin sonne au premier plan.
+// (L'arrière-plan reste impossible sur iOS : JS et audio gelés hors écran.)
+let audioCtx=null;
+function unlockAudio(){
+  try{
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }catch(e){}
+}
 function playTimerEnd(long){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    if(!audioCtx)return;                                  // jamais débloqué (aucun tap) → silencieux
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    const ctx=audioCtx;
     const beeps=long?[[0,.4,660],[.35,.4,880],[.7,.5,1100]]:[[0,.3,880],[.35,.3,880]];
     beeps.forEach(([t,dur,freq])=>{
       const osc=ctx.createOscillator();

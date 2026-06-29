@@ -21,6 +21,7 @@ Légende : ✅ fait · 🟡 partiel · ⏸️ reporté volontairement · ⬜ à 
 | **v9** | INT5 — bottom nav fixe (Séances / Cardio / Corps / Carnet) à portée de pouce ; chips S1-S4 restent en haut dans « Séances » | `v9` |
 | **v10** | INT3 — historique par exercice (tap sur le nom → 5 dernières perfs, en bottom-sheet) | `v10` |
 | **v11** | INT2 — mode focus (chip optionnel : cartes repliables, une seule dépliée par séance, coche sur les faites) | `v11` |
+| **v12** | Fix audio timer — `AudioContext` unique débloqué au tap, bip de fin fiable au premier plan (arrière-plan iOS non réalisable) | `v12` |
 
 ---
 
@@ -84,7 +85,7 @@ Principe directeur : le **créneau de mouvement** est l'unité stable du program
 ## Reliquats de l'audit code initial (qualité / accessibilité)
 
 - 🟡 **Échappement HTML / import** : `esc()` appliqué aux notes, à la date et au `cardio_type` du carnet (*v1*) ; reste : import JSON sans validation ni confirmation, écrasement silencieux.
-- ⬜ **Timer audio** : `AudioContext` recréé à chaque fois (fuite + plafond navigateur) et bip de fin probablement bloqué sur iOS (hors geste utilisateur). Réutiliser un contexte unique, le débloquer au tap de démarrage.
+- ✅ **Timer audio** : `AudioContext` unique, débloqué au tap de démarrage du timer (geste utilisateur) puis réutilisé → bip de fin fiable au premier plan, plus de fuite ni de plafond iOS — *v12*. (Arrière-plan non réalisable en web sur iOS : JS et audio gelés hors écran ; nécessiterait un wrapper natif.)
 - ⬜ **`--meas:#A78BFA;` parasite** (≈ ligne 185) hors de tout sélecteur → avale la règle `.meas-accent` suivante.
 - ⬜ **`buildWeightHistory()`** défini mais jamais appelé (code mort).
 - 🟡 **Accessibilité** : zoom réactivé + contraste `--faint` amélioré + cibles tactiles agrandies (*v4*) ; reste : aucun `aria-*`/`role`, `<div onclick>` non focusables.
