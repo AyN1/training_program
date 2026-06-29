@@ -14,7 +14,7 @@
 :root{--bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;--text:#F0EFE8;--muted:#6B6B72;--faint:#55555E;--s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;--green:#2ECC71;--red:#FF4757;--radius:14px;--nav-h:56px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 /* iOS : pas de double-tap-zoom sur les contrôles (pinch-zoom global conservé) */
-button,.timer-val,.date-display,.guide-toggle,.log-entry-header,.meas-hist-header{touch-action:manipulation}
+button,.timer-val,.date-display,.guide-toggle,.log-entry-header,.meas-hist-header,.ex-name-tappable{touch-action:manipulation}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px)}
 
 .hero{padding:44px 20px 20px;text-align:center}
@@ -35,6 +35,24 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.3px;cursor:pointer;padding:0;transition:color .15s}
 .bnav-btn.active{color:var(--s1)}
 .bnav-ico{font-size:19px;line-height:1}
+/* HISTORIQUE PAR EXERCICE (INT3) */
+.ex-name-tappable{cursor:pointer;text-decoration:underline dotted var(--faint);text-underline-offset:3px}
+.ex-hist-overlay{position:fixed;inset:0;z-index:1100;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);padding:0}
+.ex-hist-overlay.show{display:flex}
+.ex-hist-modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:520px;max-height:70vh;display:flex;flex-direction:column;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+.ex-hist-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;border-bottom:1px solid var(--border)}
+.ex-hist-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.5px}
+.ex-hist-close{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 6px}
+.ex-hist-list{overflow-y:auto;padding:6px 18px 4px}
+.ex-hist-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ex-hist-row:last-child{border-bottom:none}
+.ex-hist-date{font-size:12px;color:var(--muted);flex-shrink:0}
+.ex-hist-sub{display:block;font-size:11px;color:var(--s4);font-style:italic}
+.ex-hist-perf{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;justify-content:flex-end;font-size:13px}
+.ex-hist-perf strong{font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:400}
+.ex-hist-perf span{color:var(--muted);font-size:12px}
+.ex-hist-status{font-size:11px;color:var(--faint)}
+.ex-hist-empty{padding:22px 0 26px;text-align:center;color:var(--faint);font-size:13px}
 
 .guide-wrap{padding:14px 16px 0}
 .guide-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
@@ -709,7 +727,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
 </div>
 
-<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v9 · 29 juin 2026</div>
+<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v10 · 30 juin 2026</div>
+
+<div class="ex-hist-overlay" id="ex-hist-overlay" onclick="closeExHistory()">
+  <div class="ex-hist-modal" onclick="event.stopPropagation()">
+    <div class="ex-hist-head"><span class="ex-hist-title" id="ex-hist-title"></span><button class="ex-hist-close" type="button" onclick="closeExHistory()">✕</button></div>
+    <div class="ex-hist-list" id="ex-hist-list"></div>
+  </div>
+</div>
 
 <nav class="bottom-nav">
   <button class="bnav-btn active" data-nav="sessions" type="button" onclick="goSessions()"><span class="bnav-ico">🏋️</span>Séances</button>
@@ -969,6 +994,45 @@ function arrowHtml(exId,currentWeight,entryIdx,log){
   }
   return'<span class="log-ex-arrow" style="color:var(--faint)">·</span>';
 }
+
+// ─── HISTORIQUE PAR EXERCICE (INT3) ───────────────────────────
+// Tap sur le nom d'un exercice → 5 dernières perfs enregistrées.
+const exHasPerf=d=>!!(d&&(d.weight||d.weight_rdl||d.weight_dl||d.series||d.reps||d.duration||d.tours||d.status));
+function injectExHistory(){
+  document.querySelectorAll('.exercise-card[id]').forEach(card=>{
+    const nameEl=card.querySelector('.ex-name');
+    if(!nameEl)return;
+    nameEl.classList.add('ex-name-tappable');
+    nameEl.addEventListener('click',()=>showExHistory(card.id));
+  });
+}
+function showExHistory(exId){
+  const log=getLog();           // index 0 = plus récent
+  const rows=[];
+  for(const entry of log){
+    const d=entry.exercises&&entry.exercises[exId];
+    if(exHasPerf(d)){rows.push({date:entry.date,session:entry.session,d});}
+    if(rows.length>=5)break;
+  }
+  document.getElementById('ex-hist-title').textContent=exNames[exId]||exId;
+  const list=document.getElementById('ex-hist-list');
+  if(!rows.length){
+    list.innerHTML='<div class="ex-hist-empty">Aucune perf enregistrée pour cet exercice.</div>';
+  }else{
+    list.innerHTML=rows.map(r=>{
+      const c=sColors[r.session]||'#888';
+      let w='';
+      if(r.d.weight_rdl||r.d.weight_dl){const p=[];if(r.d.weight_rdl)p.push(r.d.weight_rdl+' kg barre');if(r.d.weight_dl)p.push(r.d.weight_dl+' kg hlt');w=p.join(' / ');}
+      else if(r.d.weight)w=r.d.weight+' kg';
+      const det=[r.d.series?r.d.series+' séries':'',r.d.reps?r.d.reps+' reps':'',r.d.duration?r.d.duration+' min':'',r.d.tours?r.d.tours+' tours':''].filter(Boolean).join(' · ');
+      const st=r.d.status?`<span class="ex-hist-status">${statusLabels[r.d.status]||r.d.status}</span>`:'';
+      const sub=r.d.sub?`<span class="ex-hist-sub">→ ${esc(r.d.sub)}</span>`:'';
+      return`<div class="ex-hist-row"><div class="ex-hist-date">${esc(r.date)}${sub}</div><div class="ex-hist-perf">${w?`<strong style="color:${c}">${w}</strong>`:''}${det?`<span>${det}</span>`:''}${st}</div></div>`;
+    }).join('');
+  }
+  document.getElementById('ex-hist-overlay').classList.add('show');
+}
+function closeExHistory(){document.getElementById('ex-hist-overlay').classList.remove('show');}
 
 // ─── SÉANCE SUGGÉRÉE (QW5) ────────────────────────────────────
 // Rotation active S1→S2→S3→S1 ; S4 et Cardio ignorés ; défaut S1.
@@ -1411,6 +1475,7 @@ initDate();
 injectNoteUI();
 injectSubUI();
 injectWeightSteppers();
+injectExHistory();
 loadState();
 revealNotes();
 revealSubs();
