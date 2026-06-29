@@ -11,11 +11,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
-:root{--bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;--text:#F0EFE8;--muted:#6B6B72;--faint:#55555E;--s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;--green:#2ECC71;--red:#FF4757;--radius:14px}
+:root{--bg:#0D0D0F;--surface:#161618;--card:#1C1C1F;--border:#2A2A2D;--text:#F0EFE8;--muted:#6B6B72;--faint:#55555E;--s1:#4ECDC4;--s2:#FF6B6B;--s3:#FFD93D;--s4:#C77DFF;--sc:#F97316;--green:#2ECC71;--red:#FF4757;--radius:14px;--nav-h:56px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 /* iOS : pas de double-tap-zoom sur les contrôles (pinch-zoom global conservé) */
 button,.timer-val,.date-display,.guide-toggle,.log-entry-header,.meas-hist-header{touch-action:manipulation}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:60px}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px)}
 
 .hero{padding:44px 20px 20px;text-align:center}
 .hero-label{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
@@ -30,6 +30,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .suggest-wrap{display:flex;justify-content:center;padding:12px 16px 0}
 .suggest-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer}
 .suggest-chip strong{font-weight:600}
+/* BOTTOM NAV (INT5) */
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:1000;display:flex;background:var(--surface);border-top:1px solid var(--border);height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.3px;cursor:pointer;padding:0;transition:color .15s}
+.bnav-btn.active{color:var(--s1)}
+.bnav-ico{font-size:19px;line-height:1}
 
 .guide-wrap{padding:14px 16px 0}
 .guide-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
@@ -51,8 +56,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .tab.active{border-color:transparent;color:#0D0D0F;font-weight:600}
 .tab[data-s="1"].active{background:var(--s1)}.tab[data-s="2"].active{background:var(--s2)}
 .tab[data-s="3"].active{background:var(--s3)}.tab[data-s="4"].active{background:var(--s4)}
-.tab[data-s="c"].active{background:var(--sc);color:#fff}.tab[data-s="log"].active{background:var(--text)}
-.tab[data-s="meas"].active{background:#A78BFA;color:#0D0D0F}
 
 .session{display:none;padding:0 16px}.session.active{display:block}
 .session-header{margin-bottom:16px}
@@ -190,7 +193,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* BARRE STICKY TIMER DE REPOS (INT1) */
-.rest-bar{position:fixed;left:0;right:0;bottom:0;display:none;align-items:center;gap:12px;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:900}
+.rest-bar{position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));display:none;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);z-index:900}
 .rest-bar.show{display:flex}
 .rest-bar-name{flex:1;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rest-bar-time{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);min-width:58px;text-align:right;font-variant-numeric:tabular-nums}
@@ -297,9 +300,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <button class="tab" data-s="2" onclick="switchTab('2')">S2</button>
   <button class="tab" data-s="3" onclick="switchTab('3')">S3</button>
   <button class="tab" data-s="4" onclick="switchTab('4')">S4</button>
-  <button class="tab" data-s="c" onclick="switchTab('c')">🔥 Cardio</button>
-  <button class="tab" data-s="meas" onclick="switchTab('meas')">📏 Corps</button>
-  <button class="tab" data-s="log" onclick="switchTab('log')">📋 Carnet</button>
 </div>
 
 <!-- ===== SÉANCE 1 ===== -->
@@ -709,7 +709,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
 </div>
 
-<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v7 · 14 juin 2026</div>
+<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v9 · 29 juin 2026</div>
+
+<nav class="bottom-nav">
+  <button class="bnav-btn active" data-nav="sessions" type="button" onclick="goSessions()"><span class="bnav-ico">🏋️</span>Séances</button>
+  <button class="bnav-btn" data-nav="c" type="button" onclick="switchTab('c')"><span class="bnav-ico">🔥</span>Cardio</button>
+  <button class="bnav-btn" data-nav="meas" type="button" onclick="switchTab('meas')"><span class="bnav-ico">📏</span>Corps</button>
+  <button class="bnav-btn" data-nav="log" type="button" onclick="switchTab('log')"><span class="bnav-ico">📋</span>Carnet</button>
+</nav>
 
 <div class="rest-bar" id="rest-bar">
   <span class="rest-bar-name" id="rest-bar-name"></span>
@@ -1109,12 +1116,22 @@ function loadState(){
   ['1','2','3','4','c'].forEach(s=>updateProgress(s));
 }
 
+let lastSession='1';
+function goSessions(){switchTab(lastSession);}
 function switchTab(n){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.session').forEach(s=>s.classList.remove('active'));
-  document.querySelector(`.tab[data-s="${n}"]`).classList.add('active');
+  const chip=document.querySelector(`.tab[data-s="${n}"]`);
+  if(chip)chip.classList.add('active');
   const tabId=n==='log'?'tablog':n==='meas'?'tabmeas':'tab'+n;
   document.getElementById(tabId).classList.add('active');
+  // Le rang de chips S1-S4 ne s'affiche que dans la section « Séances »
+  const isSession=['1','2','3','4'].includes(n);
+  document.querySelector('.tabs').style.display=isSession?'flex':'none';
+  if(isSession)lastSession=n;
+  const navKey=isSession?'sessions':n;
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.toggle('active',b.dataset.nav===navKey));
+  window.scrollTo(0,0);
 }
 
 function switchVariant(variant,btn){

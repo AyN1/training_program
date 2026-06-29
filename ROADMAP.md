@@ -17,6 +17,8 @@ Légende : ✅ fait · 🟡 partiel · ⏸️ reporté volontairement · ⬜ à 
 | **v5** | Marqueur de version visible + fixes iOS (service worker network-first, double-tap-zoom sur les boutons) | `v5` |
 | **v6** | QW5 — chip « séance suggérée » (rotation S1→S2→S3→S1, S4/Cardio ignorés) | `v6` |
 | **v7** | INT1 (scope min) — barre sticky de timer de repos, basée sur `Date.now()` (anti-dérive iOS), un seul timer actif | `v7` |
+| **v8** | Design des champs poids unifié avec les compteurs séries/reps (Bebas Neue, boutons ±2,5 kg en 36 px) | `v8` |
+| **v9** | INT5 — bottom nav fixe (Séances / Cardio / Corps / Carnet) à portée de pouce ; chips S1-S4 restent en haut dans « Séances » | `v9` |
 
 ---
 
@@ -43,7 +45,7 @@ Légende : ✅ fait · 🟡 partiel · ⏸️ reporté volontairement · ⬜ à 
 **Impact fort / effort moyen**
 - ⏸️ **INT2 — Mode focus** (cartes repliables, seul l'exercice en cours déplié) — *reporté à la demande*
 - 🟡 **INT1 — Timer de repos sticky** : barre fixe bas d'écran + timer basé sur `Date.now()` (anti-dérive iOS) + un seul timer actif à la fois — *v7* ; reste (optionnel, hors scope pour l'instant) : démarrage auto du timer à l'incrément de série
-- ⬜ **INT5 — Bottom nav fixe** (Séances / Cardio / Corps / Carnet) à portée de pouce
+- ✅ **INT5 — Bottom nav fixe** (Séances / Cardio / Corps / Carnet) à portée de pouce — *v9* ; les chips S1-S4 restent en haut, visibles seulement dans la section « Séances »
 - ⬜ **INT3 — Historique par exercice** (tap sur le nom → 5 dernières perfs)
 - ⬜ **Écran récap post-sauvegarde** (volume, exercices validés, PR éventuels)
 
@@ -91,10 +93,11 @@ Principe directeur : le **créneau de mouvement** est l'unité stable du program
 
 ## Prochaines étapes recommandées
 
-1. **INT5 / INT2** — bottom nav puis mode focus (gros chantier visuel ; le timer sticky INT1 est posé, à empiler avec la bottom nav).
-2. **INT4** — dates ISO, prérequis avant tout graphique de progression.
-3. **ST3 Batch 2** / ajustement de la table `SUBS`.
-4. **ST1** (data-driven) si on veut industrialiser ST2/ST4.
-5. **INT1 (reste)** — démarrage auto du timer à l'incrément de série, si souhaité.
+1. **INT3** — historique par exercice (5 dernières perfs au tap sur le nom) ; rapide et isolé.
+2. **INT2** — mode focus (cartes repliables) ; à empiler maintenant que la bottom nav INT5 est posée.
+3. **INT4** — dates ISO, prérequis avant tout graphique de progression.
+4. **ST3 Batch 2** / ajustement de la table `SUBS`.
+5. **ST1** (data-driven) si on veut industrialiser ST2/ST4.
+6. **INT1 (reste)** — démarrage auto du timer à l'incrément de série, si souhaité.
 
 > Réintégrer S4 dans la rotation de QW5 quand la séance S4 sera (re)mise au programme : ajouter `'3':'4','4':'1'` au lieu de `'3':'1'`.
