@@ -27,7 +27,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .date-display{font-size:14px;font-weight:500;cursor:pointer;border-bottom:1px dashed var(--faint);padding-bottom:1px}
 .date-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
 .date-hint{font-size:11px;color:var(--faint)}
-.suggest-wrap{display:flex;justify-content:center;padding:12px 16px 0}
+.suggest-wrap{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 16px 0}
 .suggest-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer}
 .suggest-chip strong{font-weight:600}
 /* BOTTOM NAV (INT5) */
@@ -53,6 +53,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .ex-hist-perf span{color:var(--muted);font-size:12px}
 .ex-hist-status{font-size:11px;color:var(--faint)}
 .ex-hist-empty{padding:22px 0 26px;text-align:center;color:var(--faint);font-size:13px}
+/* MODE FOCUS (INT2) */
+.focus-chip.active{border-color:var(--s1);color:var(--s1)}
+.focus-check,.focus-caret{display:none}
+body.focus-on .exercise-card.collapsed > *:not(.ex-header){display:none}
+body.focus-on .exercise-card.collapsed{cursor:pointer}
+body.focus-on .exercise-card.collapsed .ex-quick{display:none}
+body.focus-on .exercise-card.collapsed .ex-name-tappable{text-decoration:none}
+body.focus-on .exercise-card .focus-caret{display:inline-block;color:var(--muted);font-size:12px;flex-shrink:0;transition:transform .2s}
+body.focus-on .exercise-card:not(.collapsed) .focus-caret{transform:rotate(90deg)}
+body.focus-on .exercise-card.is-done .focus-check{display:inline-block;color:var(--green);font-size:14px;flex-shrink:0}
 
 .guide-wrap{padding:14px 16px 0}
 .guide-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
@@ -298,6 +308,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 <div class="suggest-wrap">
   <button class="suggest-chip" id="suggest-chip" type="button">Séance suggérée</button>
+  <button class="suggest-chip focus-chip" id="focus-chip" type="button" onclick="toggleFocusMode()">🎯 Mode focus</button>
 </div>
 
 <div class="guide-wrap">
@@ -727,7 +738,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
 </div>
 
-<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v10 · 30 juin 2026</div>
+<div style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--faint);padding:28px 0 10px">v11 · 30 juin 2026</div>
 
 <div class="ex-hist-overlay" id="ex-hist-overlay" onclick="closeExHistory()">
   <div class="ex-hist-modal" onclick="event.stopPropagation()">
@@ -883,6 +894,7 @@ function getSessionForEx(exId){
 }
 
 function updateProgress(session){
+  if(focusMode)updateFocusChecks();
   if(!session)return;
   const ids=sessionExercises[session];
   const state=getState();
@@ -995,6 +1007,58 @@ function arrowHtml(exId,currentWeight,entryIdx,log){
   return'<span class="log-ex-arrow" style="color:var(--faint)">·</span>';
 }
 
+// ─── MODE FOCUS (INT2) ────────────────────────────────────────
+// Toggle optionnel : cartes repliables, une seule dépliée par séance.
+let focusMode=localStorage.getItem('tp_focus7')==='1';
+const isExDone=id=>{const s=getState();return !!((s.statuses||{})[id]||hasVal((s.fields||{})[id]));};
+function injectFocusUI(){
+  document.querySelectorAll('.exercise-card[id]').forEach(card=>{
+    const header=card.querySelector('.ex-header');
+    if(!header)return;
+    header.insertAdjacentHTML('beforeend','<span class="focus-check">✓</span><span class="focus-caret">▸</span>');
+    header.querySelector('.focus-caret').addEventListener('click',e=>{e.stopPropagation();toggleFocusCard(card);});
+    header.addEventListener('click',e=>{
+      if(!focusMode)return;
+      if(e.target.closest('.skip-btn')||e.target.closest('.ex-name')||e.target.closest('.focus-caret'))return;
+      toggleFocusCard(card);
+    });
+  });
+}
+function expandFocusCard(card){
+  const sess=card.closest('.session');
+  if(sess)sess.querySelectorAll('.exercise-card').forEach(c=>{if(c!==card)c.classList.add('collapsed');});
+  card.classList.remove('collapsed');
+}
+function toggleFocusCard(card){
+  if(card.classList.contains('collapsed'))expandFocusCard(card);
+  else card.classList.add('collapsed');
+}
+function updateFocusChecks(){
+  document.querySelectorAll('.exercise-card[id]').forEach(card=>card.classList.toggle('is-done',isExDone(card.id)));
+}
+function applyFocusMode(){
+  document.body.classList.toggle('focus-on',focusMode);
+  const chip=document.getElementById('focus-chip');
+  if(chip)chip.classList.toggle('active',focusMode);
+  if(focusMode){
+    document.querySelectorAll('.session').forEach(sess=>{
+      const cards=[...sess.querySelectorAll('.exercise-card[id]')];
+      if(!cards.length)return;
+      cards.forEach(c=>c.classList.add('collapsed'));
+      (cards.find(c=>!isExDone(c.id))||cards[0]).classList.remove('collapsed'); // 1ʳᵉ non faite dépliée
+    });
+  }else{
+    document.querySelectorAll('.exercise-card').forEach(c=>c.classList.remove('collapsed'));
+  }
+  updateFocusChecks();
+}
+function toggleFocusMode(){
+  focusMode=!focusMode;
+  localStorage.setItem('tp_focus7',focusMode?'1':'0');
+  applyFocusMode();
+  showToast(focusMode?'Mode focus activé':'Mode focus désactivé');
+}
+
 // ─── HISTORIQUE PAR EXERCICE (INT3) ───────────────────────────
 // Tap sur le nom d'un exercice → 5 dernières perfs enregistrées.
 const exHasPerf=d=>!!(d&&(d.weight||d.weight_rdl||d.weight_dl||d.series||d.reps||d.duration||d.tours||d.status));
@@ -1003,7 +1067,10 @@ function injectExHistory(){
     const nameEl=card.querySelector('.ex-name');
     if(!nameEl)return;
     nameEl.classList.add('ex-name-tappable');
-    nameEl.addEventListener('click',()=>showExHistory(card.id));
+    nameEl.addEventListener('click',e=>{
+      if(focusMode&&card.classList.contains('collapsed')){e.stopPropagation();expandFocusCard(card);return;}
+      showExHistory(card.id);
+    });
   });
 }
 function showExHistory(exId){
@@ -1476,12 +1543,14 @@ injectNoteUI();
 injectSubUI();
 injectWeightSteppers();
 injectExHistory();
+injectFocusUI();
 loadState();
 revealNotes();
 revealSubs();
 prefillWeights();
 renderLog();
 renderSuggestion();
+applyFocusMode();
 document.querySelectorAll('.sc-val').forEach(el=>{el.style.color='var(--faint)';});
 initMeasurements();
 checkBackupNudge();
